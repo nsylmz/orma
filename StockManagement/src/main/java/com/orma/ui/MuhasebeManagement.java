@@ -18,6 +18,7 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window.Notification;
 
 @SuppressWarnings("serial")
 public class MuhasebeManagement extends GridLayout implements Button.ClickListener {
@@ -29,6 +30,7 @@ public class MuhasebeManagement extends GridLayout implements Button.ClickListen
 	TextField vegaFileName = new TextField("Vega Dosya İsmi");
 	TextField vegaSheetName = new TextField("Vege Excelindeki Sayfa İsmi");
 	Label sablonKlasor = new Label("D:\\Enes\\Springsource\\test data\\sablon\\");
+	TextField sablonFileName = new TextField("Şablon Dosya İsmi");
 	Label isletmeKlasor = new Label("D:\\Enes\\Springsource\\test data\\output\\");
 	Select months = new Select("İşletme Ayı");
 	TextField year = new TextField("İşletme Yılı");
@@ -46,7 +48,6 @@ public class MuhasebeManagement extends GridLayout implements Button.ClickListen
 		vegaFileName.setRequired(true);
 		vegaFileName.setWidth(textFieldSize);
 		vegaFileName.setInputPrompt("Örn: MARKET02.xls");
-		
 		vegaSheetName.setWidth(textFieldSize);
 		vegaFileName.setInputPrompt("Örn: BUFE02");
 		vegaSheetName.setRequired(false);
@@ -57,7 +58,6 @@ public class MuhasebeManagement extends GridLayout implements Button.ClickListen
 		
 		
 		sablonKlasor.setWidth(labelSize);
-		TextField sablonFileName = new TextField("Şablon Dosya İsmi");
 		sablonFileName.setWidth(textFieldSize);
 		sablonFileName.setInputPrompt("Örn: sablon.xlsx");
 		sablonFileName.setRequired(true);
@@ -67,7 +67,6 @@ public class MuhasebeManagement extends GridLayout implements Button.ClickListen
 		
 		
 		isletmeKlasor.setWidth(labelSize);
-		
 		isletmeFileName.setWidth(textFieldSize);
 		isletmeFileName.setInputPrompt("Örn: MARKET02.xlsx");
 		isletmeFileName.setRequired(true);
@@ -123,11 +122,17 @@ public class MuhasebeManagement extends GridLayout implements Button.ClickListen
 			ArrayList<IsletmeSayfa> isletmeSayfaList = IsletmeProcessor.convertVegaToIsletme(processedDokuman);
 			
 			IsletmeWriter.writeIsletmeFile(
-					sablonKlasor.getValue().toString().trim(),
+					sablonKlasor.getValue().toString().trim() + sablonFileName.getValue().toString().trim(),
 					isletmeKlasor.getValue().toString().trim() + isletmeFileName.getValue().toString().trim(),
 					"SABLON", Integer.parseInt(templatePageNumber.getValue().toString().trim()), 
 					isletmeSayfaList, months.getValue().toString(), Integer.parseInt(year.getValue().toString().trim()),
 					branchName.getValue().toString().trim());
+			
+			Notification transactionComplate = new Notification("iŞLETİM DEFTERİ OLUŞTURULMUŞTUR. DOSYAYI KONTROL EDİNİZ. " 
+										+ isletmeKlasor.getValue().toString().trim() + isletmeFileName.getValue().toString().trim(), 
+										Notification.TYPE_HUMANIZED_MESSAGE);
+			transactionComplate.setDelayMsec(100);
+			getWindow().showNotification(transactionComplate);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
