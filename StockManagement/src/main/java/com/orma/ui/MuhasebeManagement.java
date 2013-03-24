@@ -10,6 +10,7 @@ import com.orma.muhasebe.isletme.IsletmeWriter;
 import com.orma.muhasebe.vega.VegaDokumanProcessor;
 import com.orma.muhasebe.vega.VegaDokumanReader;
 import com.orma.muhasebe.vega.VegaDokumanWriter;
+import com.vaadin.data.Validator.EmptyValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -98,14 +99,18 @@ public class MuhasebeManagement extends GridLayout implements Button.ClickListen
 		addComponent(submit, 0, 5);
 		
 		
-//		submit.addValidator(validator);
-		
-		
 	}
 
 	@Override
 	public void buttonClick(ClickEvent event) {
 		try {
+			vegaFileName.validate();
+			sablonFileName.validate();
+			isletmeFileName.validate();
+			months.validate();
+			year.validate();
+			branchName.validate();
+			templatePageNumber.validate();
 			VegaDokuman dokuman = VegaDokumanReader.readDokuman(vegaKlasor.getValue().toString().trim() + vegaFileName.getValue().toString().trim(), 
 																vegaSheetName.getValue().toString().trim(), false);
 		
@@ -133,8 +138,13 @@ public class MuhasebeManagement extends GridLayout implements Button.ClickListen
 										Notification.TYPE_HUMANIZED_MESSAGE);
 			transactionComplate.setDelayMsec(100);
 			getWindow().showNotification(transactionComplate);
+			
+		} catch (EmptyValueException e) {
+			getWindow().showNotification("Zorunlu Alanları Doldurup Tekrar Deniyeniz!!!", Notification.TYPE_WARNING_MESSAGE);
 		} catch (Exception e) {
 			System.out.println(e);
+		} finally {
+			
 		}
 	}
 
