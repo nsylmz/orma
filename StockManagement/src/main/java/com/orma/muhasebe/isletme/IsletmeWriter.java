@@ -188,6 +188,8 @@ public class IsletmeWriter {
 			String outputFilePath, String sheetName, int totalPageNumber,
 			ArrayList<IsletmeSayfa> isletmeSayfaList, String month, int year, String kantinType) throws Exception {
 
+		totalPageNumber = totalPageNumber - 1;
+		
 		InputStream inp = new FileInputStream(baseFilePath);
 		Workbook wb = WorkbookFactory.create(inp);
 		Sheet sheet = wb.getSheet(sheetName);
