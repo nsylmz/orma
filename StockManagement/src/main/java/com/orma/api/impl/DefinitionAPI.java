@@ -40,7 +40,12 @@ public class DefinitionAPI implements IDefinitionAPI {
 
 	@Override
 	public void createBrand(Brand brand) {
-		brandDao.persist(brand);
+		brandDao.merge(brand);
+	}
+	
+	@Override
+	public void saveAllBrands(List<Brand> brands){
+		
 	}
 	
 	@Override

@@ -12,6 +12,8 @@ public interface IDefinitionAPI {
 	
 	public void createBrand(Brand brand);
 	
+	public void saveAllBrands(List<Brand> brands);
+	
 	public List<Brand> getAllBrands();
 	
 	public void createProduct(Product product);

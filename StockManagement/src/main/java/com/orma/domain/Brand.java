@@ -22,4 +22,12 @@ public class Brand extends BaseEntity {
 		this.name = name;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || this.name == null) {
+			return super.equals(obj);
+		}
+		return (this.name.equals(((Brand) obj).getName()));
+	}
+
 }

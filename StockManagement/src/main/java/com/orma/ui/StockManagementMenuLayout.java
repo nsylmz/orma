@@ -69,7 +69,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 			} else if (event.getProperty().getValue().equals("Marka Yönetimi")) {
 				appLayout = layouts.get("brand");
 				if (appLayout == null) {
-					appLayout = new BrandManagement();
+					appLayout = new BrandManagement(1, 2);
 					layouts.put("brand", appLayout);
 				}
 				mainPanel.setSecondComponent(appLayout) ;
