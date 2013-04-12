@@ -5,12 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="PRODUCT")
-public class Product extends BaseEntity {
+@Table(name="PRODUCT",
+	   uniqueConstraints = @UniqueConstraint(columnNames = {"id", "NAME", "BARCODE"}))
+public class Product extends BaseEntity implements IBaseEntity {
 	
 	@Column(name = "NAME")
 	@NotNull
@@ -59,6 +61,15 @@ public class Product extends BaseEntity {
 
 	public void setBrand(Brand brand) {
 		this.brand = brand;
+	}
+	
+	@Override
+	public boolean contentEquals(Object obj) {
+		if (obj == null || this.name == null 
+				|| this.name.trim().length() == 0) {
+			return super.equals(obj);
+		}
+		return (this.name.trim().equals(((Product) obj).getName().trim()));
 	}
 	
 }

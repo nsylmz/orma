@@ -10,18 +10,26 @@ import com.orma.domain.WarehouseRecord;
 
 public interface IDefinitionAPI {
 	
-	public void createBrand(Brand brand);
+	public void saveBrand(Brand brand);
 	
-	public void saveAllBrands(List<Brand> brands);
+	public void deleteBrand(Brand brand);
 	
 	public List<Brand> getAllBrands();
 	
-	public void createProduct(Product product);
+	public void saveProduct(Product product);
 	
-	public void createCompany(Company company);
+	public void saveCompany(Company company);
 	
-	public void createWarehouse(Warehouse warehouse);
+	public void deleteCompany(Company company);
 	
-	public void createWarehouseRecord(WarehouseRecord warehouseRecord);
+	public List<Company> getAllCompanies();
+	
+	public void saveWarehouse(Warehouse warehouse);
+	
+	public void deleteWarehouse(Warehouse warehouse);
+	
+	public List<Warehouse> getAllWarehouses();
+	
+	public void saveWarehouseRecord(WarehouseRecord warehouseRecord);
 
 }

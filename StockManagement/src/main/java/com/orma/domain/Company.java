@@ -3,12 +3,14 @@ package com.orma.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="COMPANY")
-public class Company extends BaseEntity {
+@Table(name="COMPANY", 
+	   uniqueConstraints = @UniqueConstraint(columnNames = {"id", "NAME"}))
+public class Company extends BaseEntity implements IBaseEntity {
    
 	@Column(name = "NAME")
 	@NotNull
@@ -64,6 +66,15 @@ public class Company extends BaseEntity {
 
 	public void setTaxName(String taxName) {
 		this.taxName = taxName;
+	}
+	
+	@Override
+	public boolean contentEquals(Object obj) {
+		if (obj == null || this.name == null 
+				|| this.name.trim().length() == 0) {
+			return super.equals(obj);
+		}
+		return (this.name.trim().equals(((Company) obj).getName().trim()));
 	}
 
 }

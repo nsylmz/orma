@@ -30,8 +30,7 @@ public class StockManagementApplication extends Application
 //    	setTheme(Reindeer.THEME_NAME);
         mainWindow = new Window("Kantin Başkanlığı Programı Ana Ekran");
         setMainWindow(mainWindow);
-        mainWindow.setHeight("750px");
-        mainWindow.setWidth("100%");
+        mainWindow.setSizeFull();
         
         String basepath = this.getContext().getBaseDirectory().getAbsolutePath();
         System.out.println(basepath);

@@ -39,13 +39,13 @@ public class DefinitionAPI implements IDefinitionAPI {
 	private WarehouseRecordDaoI warehouseRecordDao;
 
 	@Override
-	public void createBrand(Brand brand) {
+	public void saveBrand(Brand brand) {
 		brandDao.merge(brand);
 	}
 	
 	@Override
-	public void saveAllBrands(List<Brand> brands){
-		
+	public void deleteBrand(Brand brand) {
+		brandDao.delete(brandDao.findById(brand.getId()));
 	}
 	
 	@Override
@@ -54,23 +54,43 @@ public class DefinitionAPI implements IDefinitionAPI {
 	}
 
 	@Override
-	public void createProduct(Product product) {
-		productDao.persist(product);
+	public void saveProduct(Product product) {
+		productDao.merge(product);
 	}
 
 	@Override
-	public void createCompany(Company company) {
-		companyDao.persist(company);
+	public void saveCompany(Company company) {
+		companyDao.merge(company);
+	}
+	
+	@Override
+	public void deleteCompany(Company company) {
+		companyDao.delete(companyDao.findById(company.getId()));
+	}
+	
+	@Override
+	public List<Company> getAllCompanies() {
+		return companyDao.findAll();
 	}
 
 	@Override
-	public void createWarehouse(Warehouse warehouse) {
-		warehouseDao.persist(warehouse);
+	public void saveWarehouse(Warehouse warehouse) {
+		warehouseDao.merge(warehouse);
+	}
+	
+	@Override
+	public void deleteWarehouse(Warehouse warehouse) {
+		warehouseDao.delete(warehouseDao.findById(warehouse.getId()));
+	}
+	
+	@Override
+	public List<Warehouse> getAllWarehouses() {
+		return warehouseDao.findAll();
 	}
 
 	@Override
-	public void createWarehouseRecord(WarehouseRecord warehouseRecord) {
-		warehouseRecordDao.persist(warehouseRecord);
+	public void saveWarehouseRecord(WarehouseRecord warehouseRecord) {
+		warehouseRecordDao.merge(warehouseRecord);
 	}
 
 	public void setBrandDao(BrandDaoI brandDao) {

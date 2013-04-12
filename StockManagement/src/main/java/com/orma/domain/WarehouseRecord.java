@@ -25,6 +25,14 @@ public class WarehouseRecord extends BaseEntity {
 	@NotNull
 	@Column(name = "AMOUNT")
 	private Integer amount;
+	
+	@NotNull
+	@Column(name = "BUY_PRICE")
+	private Integer buyPrice;
+	
+	@NotNull
+	@Column(name = "SELL_PRICE")
+	private Integer sellPrice;
 
 	@Column(name = "BILL_NUMBER")
 	private Long billNumber;
@@ -54,6 +62,22 @@ public class WarehouseRecord extends BaseEntity {
 
 	public void setAmount(Integer amount) {
 		this.amount = amount;
+	}
+	
+	public Integer getBuyPrice() {
+		return buyPrice;
+	}
+
+	public void setBuyPrice(Integer buyPrice) {
+		this.buyPrice = buyPrice;
+	}
+
+	public Integer getSellPrice() {
+		return sellPrice;
+	}
+
+	public void setSellPrice(Integer sellPrice) {
+		this.sellPrice = sellPrice;
 	}
 
 	public Long getBillNumber() {

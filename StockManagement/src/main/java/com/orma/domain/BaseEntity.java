@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -29,6 +30,17 @@ public class BaseEntity implements Serializable {
 	@Column(name = "TRANSACTION_TIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date transactionTime;
+	
+	@Transient
+	private boolean sec;
+	
+	public boolean isSec() {
+		return sec;
+	}
+
+	public void setSec(boolean sec) {
+		this.sec = sec;
+	}
 
 	public Long getId() {
 		return id;
@@ -52,6 +64,14 @@ public class BaseEntity implements Serializable {
 
 	public void setTransactionTime(Date transactionTime) {
 		this.transactionTime = transactionTime;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || this == null || this.id == null) {
+			return super.equals(obj);
+		}
+		return this.id.equals(((BaseEntity) obj).getId());
 	}
 	
 }

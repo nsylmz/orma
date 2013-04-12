@@ -63,16 +63,26 @@ public class StockManagementMenuLayout extends GridLayout implements
 			} else if (event.getProperty().getValue().equals("Ürün Yönetimi")) {
 				getWindow().showNotification("Selected item: " + event.getProperty().getValue());
 			} else if (event.getProperty().getValue().equals("Depo Yönetimi")) {
-				getWindow().showNotification("Selected item: " + event.getProperty().getValue());
+				appLayout = layouts.get("warehouse");
+				if (appLayout == null) {
+					appLayout = new WarehouseManagement(2, 2);
+					layouts.put("warehouse", appLayout);
+				}
+				mainPanel.setSecondComponent(appLayout);
 			} else if (event.getProperty().getValue().equals("Firma Yönetimi")) {
-				getWindow().showNotification("Selected item: " + event.getProperty().getValue());
+				appLayout = layouts.get("company");
+				if (appLayout == null) {
+					appLayout = new CompanyManagement(2, 2);
+					layouts.put("company", appLayout);
+				}
+				mainPanel.setSecondComponent(appLayout);
 			} else if (event.getProperty().getValue().equals("Marka Yönetimi")) {
 				appLayout = layouts.get("brand");
 				if (appLayout == null) {
-					appLayout = new BrandManagement(1, 2);
+					appLayout = new BrandManagement(2, 2);
 					layouts.put("brand", appLayout);
 				}
-				mainPanel.setSecondComponent(appLayout) ;
+				mainPanel.setSecondComponent(appLayout);
 			}    
 		}
 	}
