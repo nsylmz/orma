@@ -18,6 +18,10 @@ public interface IDefinitionAPI {
 	
 	public void saveProduct(Product product);
 	
+	public void deleteProduct(Product product);
+	
+	public List<Product> getAllProducts();
+	
 	public void saveCompany(Company company);
 	
 	public void deleteCompany(Company company);
@@ -31,5 +35,9 @@ public interface IDefinitionAPI {
 	public List<Warehouse> getAllWarehouses();
 	
 	public void saveWarehouseRecord(WarehouseRecord warehouseRecord);
+	
+	public void deleteWarehouseRecord(WarehouseRecord warehouseRecord);
+	
+	public List<WarehouseRecord> getAllWarehouseRecords();
 
 }

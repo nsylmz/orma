@@ -1,6 +1,5 @@
 package com.orma.ui;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +40,6 @@ public class CompanyManagement extends GridLayout {
 	private Container companyContainer;
 	private TextField ekleSayisi;
 	
-	@SuppressWarnings("unchecked")
 	public CompanyManagement(int columns, int rows) {
 		setSizeFull();
 		setSpacing(true);
@@ -105,7 +103,7 @@ public class CompanyManagement extends GridLayout {
 				companyTable.setEditable(true);
 				companyTable.setVisibleColumns(new String[]{"name", "taxName", "taxNumber", "tel", "adress", "sec"});
 				companyTable.setColumnHeaders(new String[]{"İSİM", "VERGİ ŞUBESİ", "VERGİ NUMARASI", "TELEFON", "ADRES", "SEÇ"});
-				companyTable.setColumnWidth("sec", 50);
+				companyTable.setColumnWidth("sec", 135);
 		    }
 		});
 		
@@ -157,6 +155,7 @@ public class CompanyManagement extends GridLayout {
 						}
 					}
 				}
+				companyTable.setWidth("920px");
 				uiCompanyList = definitionAPI.getAllCompanies();
 				companyContainer = new BeanItemContainer<Company>(Company.class, uiCompanyList);
 				companyTable.setContainerDataSource(companyContainer);

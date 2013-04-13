@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.orma.api.IDefinitionAPI;
 import com.orma.domain.Brand;
+import com.orma.domain.IBaseEntity;
+import com.orma.utils.OrmaUtils;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
@@ -142,13 +144,17 @@ public class BrandManagement extends GridLayout {
 					if (brand.isSec()) {
 						if (brand.getName() != null
 								&& brand.getName().length() > 0
-								&& !brand.getName().equals("null") 
-								&& !baseBrandList.contains(brand)) {
-							brand.setTransactionTime(new Date());
-							definitionAPI.saveBrand(brand);
+								&& !brand.getName().equals("null")) {
+							if (!OrmaUtils.listContains(baseBrandList, (IBaseEntity)brand)) {
+								brand.setTransactionTime(new Date());
+								definitionAPI.saveBrand(brand);
+							} else {
+								// TODO throw exception
+							}
 						}
 					}
 				}
+				brandTable.setWidth("370px");
 				baseBrandList = definitionAPI.getAllBrands();
 				uiBrandList = (List<Brand>)((ArrayList<Brand>)baseBrandList).clone();
 				brandContainer = new BeanItemContainer<Brand>(Brand.class, uiBrandList);

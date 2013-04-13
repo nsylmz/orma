@@ -101,7 +101,7 @@ public class WarehouseManagement extends GridLayout {
 				warehouseTable.setEditable(true);
 				warehouseTable.setVisibleColumns(new String[]{"name", "place", "sec"});
 				warehouseTable.setColumnHeaders(new String[]{"İSİM", "YER", "SEÇ"});
-				warehouseTable.setColumnWidth("sec", 50);
+				warehouseTable.setColumnWidth("sec", 135);
 		    }
 		});
 		

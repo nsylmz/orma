@@ -31,20 +31,23 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.addItem("Depo Stok Yönetim Programı");
 
 		menuTree.addItem("Ürün Yönetimi");
-		menuTree.addItem("Depo Yönetimi");
 		menuTree.addItem("Firma Yönetimi");
 		menuTree.addItem("Marka Yönetimi");
+		menuTree.addItem("Depo Yönetimi");
+		menuTree.addItem("Depo Kayıt Yönetimi");
 
 		menuTree.setParent("Ürün Yönetimi", "Depo Stok Yönetim Programı");
-		menuTree.setParent("Depo Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Firma Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Marka Yönetimi", "Depo Stok Yönetim Programı");
+		menuTree.setParent("Depo Yönetimi", "Depo Stok Yönetim Programı");
+		menuTree.setParent("Depo Kayıt Yönetimi", "Depo Stok Yönetim Programı");
 
 		menuTree.setChildrenAllowed("Muhasebe Destek Programı", false);
 		menuTree.setChildrenAllowed("Ürün Yönetimi", false);
-		menuTree.setChildrenAllowed("Depo Yönetimi", false);
 		menuTree.setChildrenAllowed("Firma Yönetimi", false);
 		menuTree.setChildrenAllowed("Marka Yönetimi", false);
+		menuTree.setChildrenAllowed("Depo Yönetimi", false);
+		menuTree.setChildrenAllowed("Depo Kayıt Yönetimi", false);
 		
 		setSpacing(true);
 		addComponent(menuTree);
@@ -61,12 +64,25 @@ public class StockManagementMenuLayout extends GridLayout implements
 				}
 				mainPanel.setSecondComponent(appLayout) ;
 			} else if (event.getProperty().getValue().equals("Ürün Yönetimi")) {
-				getWindow().showNotification("Selected item: " + event.getProperty().getValue());
+//				getWindow().showNotification("Selected item: " + event.getProperty().getValue());
+				appLayout = layouts.get("ürün");
+				if (appLayout == null) {
+					appLayout = new ProductManagement(2, 2);
+					layouts.put("ürün", appLayout);
+				}
+				mainPanel.setSecondComponent(appLayout);
 			} else if (event.getProperty().getValue().equals("Depo Yönetimi")) {
 				appLayout = layouts.get("warehouse");
 				if (appLayout == null) {
 					appLayout = new WarehouseManagement(2, 2);
 					layouts.put("warehouse", appLayout);
+				}
+				mainPanel.setSecondComponent(appLayout);
+			} else if (event.getProperty().getValue().equals("Depo Kayıt Yönetimi")) {
+				appLayout = layouts.get("warehouseRecord");
+				if (appLayout == null) {
+					appLayout = new WarehouseRecordManagement(2, 2);
+					layouts.put("warehouseRecord", appLayout);
 				}
 				mainPanel.setSecondComponent(appLayout);
 			} else if (event.getProperty().getValue().equals("Firma Yönetimi")) {

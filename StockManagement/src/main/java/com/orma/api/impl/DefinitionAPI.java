@@ -57,6 +57,16 @@ public class DefinitionAPI implements IDefinitionAPI {
 	public void saveProduct(Product product) {
 		productDao.merge(product);
 	}
+	
+	@Override
+	public void deleteProduct(Product product) {
+		productDao.delete(productDao.findById(product.getId()));
+	}
+	
+	@Override
+	public List<Product> getAllProducts() {
+		return productDao.findAll();
+	}
 
 	@Override
 	public void saveCompany(Company company) {
@@ -91,6 +101,16 @@ public class DefinitionAPI implements IDefinitionAPI {
 	@Override
 	public void saveWarehouseRecord(WarehouseRecord warehouseRecord) {
 		warehouseRecordDao.merge(warehouseRecord);
+	}
+	
+	@Override
+	public void deleteWarehouseRecord(WarehouseRecord warehouseRecord) {
+		warehouseRecordDao.delete(warehouseRecordDao.findById(warehouseRecord.getId()));
+	}
+	
+	@Override
+	public List<WarehouseRecord> getAllWarehouseRecords() {
+		return warehouseRecordDao.findAll();
 	}
 
 	public void setBrandDao(BrandDaoI brandDao) {
