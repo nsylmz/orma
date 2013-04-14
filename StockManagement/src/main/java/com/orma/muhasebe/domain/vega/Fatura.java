@@ -7,7 +7,7 @@ import java.util.Date;
 public class Fatura {
 	
 	private Integer siraNo;
-	private BigDecimal evrakNo;
+	private String evrakNo;
 	private Date tarih;
 	private BigDecimal toplamAlisTutari;
 	private BigDecimal toplamSatisTutari;
@@ -23,11 +23,11 @@ public class Fatura {
 		this.siraNo = siraNo;
 	}
 
-	public BigDecimal getEvrakNo() {
+	public String getEvrakNo() {
 		return this.evrakNo;
 	}
 
-	public void setEvrakNo(BigDecimal evrakNo) {
+	public void setEvrakNo(String evrakNo) {
 		this.evrakNo = evrakNo;
 	}
 

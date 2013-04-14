@@ -30,11 +30,17 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.addItem("Muhasebe Destek Programı");
 		menuTree.addItem("Depo Stok Yönetim Programı");
 
+		menuTree.addItem("İşletme Defteri");
+		menuTree.addItem("Sayım Tartı");
+		
 		menuTree.addItem("Ürün Yönetimi");
 		menuTree.addItem("Firma Yönetimi");
 		menuTree.addItem("Marka Yönetimi");
 		menuTree.addItem("Depo Yönetimi");
 		menuTree.addItem("Depo Kayıt Yönetimi");
+		
+		menuTree.setParent("İşletme Defteri", "Muhasebe Destek Programı");
+		menuTree.setParent("Sayım Tartı", "Muhasebe Destek Programı");
 
 		menuTree.setParent("Ürün Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Firma Yönetimi", "Depo Stok Yönetim Programı");
@@ -42,7 +48,8 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setParent("Depo Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Depo Kayıt Yönetimi", "Depo Stok Yönetim Programı");
 
-		menuTree.setChildrenAllowed("Muhasebe Destek Programı", false);
+		menuTree.setChildrenAllowed("İşletme Defteri", false);
+		menuTree.setChildrenAllowed("Sayım Tartı", false);
 		menuTree.setChildrenAllowed("Ürün Yönetimi", false);
 		menuTree.setChildrenAllowed("Firma Yönetimi", false);
 		menuTree.setChildrenAllowed("Marka Yönetimi", false);
@@ -56,13 +63,20 @@ public class StockManagementMenuLayout extends GridLayout implements
 	public void valueChange(ValueChangeEvent event) {
 		if (event.getProperty().getValue() != null) {
 			GridLayout appLayout = null;
-			if (event.getProperty().getValue().equals("Muhasebe Destek Programı")) {
-				appLayout = layouts.get("muhasebe");
+			if (event.getProperty().getValue().equals("İşletme Defteri")) {
+				appLayout = layouts.get("isletme");
 				if (appLayout == null) {
-					appLayout = new MuhasebeManagement();
-					layouts.put("muhasebe", appLayout);
+					appLayout = new IsletmeManagement();
+					layouts.put("isletme", appLayout);
 				}
 				mainPanel.setSecondComponent(appLayout) ;
+			} else if (event.getProperty().getValue().equals("Sayım Tartı")) {
+				appLayout = layouts.get("sayim");
+				if (appLayout == null) {
+					appLayout = new SayimTartiManagement();
+					layouts.put("sayim", appLayout);
+				}
+				mainPanel.setSecondComponent(appLayout);
 			} else if (event.getProperty().getValue().equals("Ürün Yönetimi")) {
 //				getWindow().showNotification("Selected item: " + event.getProperty().getValue());
 				appLayout = layouts.get("ürün");
