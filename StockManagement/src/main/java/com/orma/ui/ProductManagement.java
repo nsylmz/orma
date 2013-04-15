@@ -36,17 +36,22 @@ public class ProductManagement extends GridLayout {
 	@Autowired
 	IDefinitionAPI definitionAPI;
 	
+	private GridLayout controlLayout = new GridLayout(5,2);
+	private GridLayout listLayout = new GridLayout(1,2);
+	private HorizontalLayout ekleLayout = new HorizontalLayout();
 	private Table productTable;
+	private Select brandSelect;
+	private Button listButton;
 	private Button ekle;
 	private Button sil;
 	private Button guncelle;
 	private Button kaydet;
-	private GridLayout controlLayout = new GridLayout(5,2);
 	private List<Product> baseProductList;
 	private List<Product> uiProductList;
+	private List<Brand> brands;
 	private BeanItemContainer<Product> productContainer;
 	private TextField ekleSayisi;
-	private List<Brand> brands;
+	private Label ekleLabel = new Label("Ekleme Sayısı");
 	
 	public ProductManagement(int columns, int rows) {
 		setSizeFull();
@@ -54,111 +59,91 @@ public class ProductManagement extends GridLayout {
 		setColumns(columns);
 		setRows(rows);
 		
-		productTable = new Table("Marka Yönetim Tablosu");
+		brands = definitionAPI.getAllBrands();
+		brandSelect = new Select("Marka");
+		BeanItemContainer<Brand> brandContainer = new BeanItemContainer<Brand>(Brand.class, brands);
+		brandSelect.setContainerDataSource(brandContainer);
+		brandSelect.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		brandSelect.setItemCaptionPropertyId("name");
+		
+		listButton = new Button("Sorgula");
+		
+		productTable = new Table("Ürün Yönetim Tablosu");
+		productTable.setEnabled(false);
 		productTable.setImmediate(true);
 		productTable.setHeight("400px");
-		productTable.setWidth("850px");
-
-		uiProductList = definitionAPI.getAllProducts();
-		productContainer = new BeanItemContainer<Product>(Product.class, uiProductList);
-		productContainer.addNestedContainerProperty("brand.name");
+		productTable.setWidth("750px");
+		productContainer = new BeanItemContainer<Product>(Product.class);
 		productTable.setContainerDataSource(productContainer);
-		productTable.setTableFieldFactory(new TableFieldFactory() {
-            @Override
-            public Field createField(Container container, Object itemId,
-                    Object propertyId, Component uiContext) {
-                Field field = null;
-                if ("name".equals(propertyId)) {
-                	field = new TextField();
-                    field.setWidth("240px");
-                } else if ("barcode".equals(propertyId)) {
-                	field = new TextField();
-                } else if ("productType".equals(propertyId)) {
-                	field = new TextField();
-                } else if ("transactionTime".equals(propertyId)) {
-                	field = new DateField();
-                } else if ("sec".equals(propertyId)) {
-                	field = new CheckBox();
-                } else if ("brand".equals(propertyId)) {
-                	Brand brand = ((Product) itemId).getBrand();
-                	if (productTable.isEditable()) {
-                		brands = definitionAPI.getAllBrands();
-                		BeanItemContainer<Brand> brandContainer = new BeanItemContainer<Brand>(Brand.class, brands);
-                		Select brandSelect = new Select();
-                		brandSelect.setContainerDataSource(brandContainer);
-                		brandSelect.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
-                		brandSelect.setItemCaptionPropertyId("name");
-                		if (brand != null 
-                				&& brand.getName() != null
-                				&& brand.getName().trim().length() > 0) {
-                			brandSelect.setValue(brand.getName().trim());
-                		} else {
-                			brandSelect.setValue(""); 	
-                		}
-                		brandSelect.setImmediate(true);
-                		field = brandSelect;
-					} else {
-						if (brand != null 
-                				&& brand.getName() != null
-                				&& brand.getName().trim().length() > 0) {
-                			field = new TextField(brand.getName().trim());
-                		} else {
-                			field = new TextField("");
-                		}
-					}
-                }
-                return field;
-            }
-        });
+		productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
+		productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
 		
-		productTable.setVisibleColumns(new String[]{"barcode", "name", "brand.name", "productType", "transactionTime"});
-		productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "MARKA", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
 		productTable.setColumnWidth("barcode", 100);
-		productTable.setColumnWidth("name", 250);
-		productTable.setColumnWidth("brand", 135);
+		productTable.setColumnWidth("name", 325);
 		productTable.setColumnWidth("productType", 135);
 		productTable.setColumnWidth("transactionTime", 135);
-		addComponent(productTable, 0 ,0);
-		setComponentAlignment(productTable, Alignment.BOTTOM_CENTER);
 		
+		listLayout.addComponent(brandSelect, 0 ,0);
+		listLayout.addComponent(listButton, 0 ,1);
+		listLayout.setComponentAlignment(brandSelect, Alignment.BOTTOM_CENTER);
+		listLayout.setComponentAlignment(listButton, Alignment.BOTTOM_CENTER);
+		
+		addComponent(listLayout, 0 ,0);
+		setComponentAlignment(listLayout, Alignment.BOTTOM_CENTER);
+		
+		addComponent(productTable, 0 ,1);
+		setComponentAlignment(productTable, Alignment.BOTTOM_CENTER);
 		
 		guncelle = new Button("Güncelle");
 		ekle = new Button("Ekle");
 		kaydet = new Button("Kaydet");
 		sil = new Button("Sil");
 		ekleSayisi = new TextField();
-		Label ekleLabel = new Label("Ekleme Sayısı");
-		ekleSayisi.setWidth("50px");
-		HorizontalLayout ekleLayout = new HorizontalLayout();
+		
 		ekleLayout.setSpacing(true);
 		ekleLayout.addComponent(ekleLabel);
 		ekleLayout.addComponent(ekleSayisi);
+		
+		ekleSayisi.setWidth("50px");
 		ekle.setWidth("85px");
 		sil.setWidth("85px");
 		kaydet.setWidth("85px");
 		guncelle.setWidth("85px");
+		
 		controlLayout.setSpacing(true);
+		controlLayout.setEnabled(false);
 		controlLayout.setWidth("350px");
+		
 		controlLayout.setRowExpandRatio(0, 2);
 		controlLayout.setRowExpandRatio(1, 1);
+		
 		controlLayout.addComponent(guncelle, 0, 0);
 		controlLayout.addComponent(ekleLayout, 1, 0);
 		controlLayout.addComponent(ekle, 2,0);
 		controlLayout.addComponent(kaydet, 1, 1);
 		controlLayout.addComponent(sil, 2, 1);
+		
 		controlLayout.setComponentAlignment(guncelle, Alignment.MIDDLE_LEFT);
 		controlLayout.setComponentAlignment(ekle, Alignment.MIDDLE_LEFT);
 		controlLayout.setComponentAlignment(ekleLayout, Alignment.MIDDLE_RIGHT);
 		controlLayout.setComponentAlignment(kaydet, Alignment.BOTTOM_RIGHT);
 		controlLayout.setComponentAlignment(sil, Alignment.BOTTOM_LEFT);
-		addComponent(controlLayout, 0, 1);
+		
+		addComponent(controlLayout, 0, 2);
 		setComponentAlignment(controlLayout, Alignment.TOP_CENTER);
+		
 		guncelle.addListener(new Button.ClickListener() {
 			@Override
 		    public void buttonClick(ClickEvent event) {
 				productTable.setEditable(true);
-				productTable.setVisibleColumns(new String[]{"barcode", "name", "brand", "productType", "sec"});
-				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "MARKA", "ÜRÜN TİPİ", "SEÇ"});
+				ekle.setEnabled(true);
+				kaydet.setEnabled(true);
+				sil.setEnabled(true);
+				ekleSayisi.setEnabled(true);
+				guncelle.setEnabled(false);
+				
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "sec"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "SEÇ"});
 				productTable.setColumnWidth("sec", 135);
 		    }
 		});
@@ -173,7 +158,11 @@ public class ProductManagement extends GridLayout {
 					emptyProduct.setName("");
 					emptyProduct.setBarcode(0L);
 					emptyProduct.setProductType("");
-					emptyProduct.setBrand(new Brand());
+					if (brandSelect.getValue() != null) {
+						emptyProduct.setBrand((Brand) brandSelect.getValue());
+					} else {
+						// TODO : throw exception
+					}
 					productContainer.addItem(emptyProduct);
 				} else {
 					for (int i = 0; i < Integer.parseInt(ekleSayisi.getValue().toString()); i++) {
@@ -181,7 +170,11 @@ public class ProductManagement extends GridLayout {
 						emptyProduct.setName("");
 						emptyProduct.setProductType("");
 						emptyProduct.setBarcode(0L);
-						emptyProduct.setBrand(new Brand());
+						if (brandSelect.getValue() != null) {
+							emptyProduct.setBrand((Brand) brandSelect.getValue());
+						} else {
+							// TODO : throw exception
+						}
 						productContainer.addItem(emptyProduct);
 					}
 				}
@@ -194,8 +187,18 @@ public class ProductManagement extends GridLayout {
 			@SuppressWarnings("rawtypes")
 			@Override
 		    public void buttonClick(ClickEvent event) {
+				ekle.setEnabled(false);
+				kaydet.setEnabled(false);
+				sil.setEnabled(false);
+				ekleSayisi.setEnabled(false);
+				guncelle.setEnabled(true);
+				
 				Product product = null;
-				baseProductList = definitionAPI.getAllProducts();
+				if (brandSelect.getValue() != null) {
+					baseProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
 				for (Iterator i = productContainer.getItemIds().iterator(); i.hasNext();) {
 					product =  (Product) i.next();
 					if (product.isSec() 
@@ -211,13 +214,16 @@ public class ProductManagement extends GridLayout {
 					}
 				}
 				productTable.setWidth("850px");
-				uiProductList = definitionAPI.getAllProducts();
+				if (brandSelect.getValue() != null) {
+					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
 				productContainer = new BeanItemContainer<Product>(Product.class, uiProductList);
-				productContainer.addNestedContainerProperty("brand.name");
 				productTable.setContainerDataSource(productContainer);
 				productTable.setEditable(false);
-				productTable.setVisibleColumns(new String[]{"barcode", "name", "brand.name", "productType", "transactionTime"});
-				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "MARKA", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
 				productTable.refreshRowCache();
 		    }
 		});
@@ -226,8 +232,18 @@ public class ProductManagement extends GridLayout {
 			@SuppressWarnings("rawtypes")
 			@Override
 		    public void buttonClick(ClickEvent event) {
+				ekle.setEnabled(false);
+				kaydet.setEnabled(false);
+				sil.setEnabled(false);
+				ekleSayisi.setEnabled(false);
+				guncelle.setEnabled(true);
+				
 				Product product = null;
-				baseProductList = definitionAPI.getAllProducts();
+				if (brandSelect.getValue() != null) {
+					baseProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
 				for (Iterator i = productContainer.getItemIds().iterator(); i.hasNext();) {
 					product =  (Product) i.next();
 					if (product.isSec()) {
@@ -239,13 +255,60 @@ public class ProductManagement extends GridLayout {
 						}
 					}
 				}
-				uiProductList = definitionAPI.getAllProducts();
+				if (brandSelect.getValue() != null) {
+					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
 				productContainer = new BeanItemContainer<Product>(Product.class, uiProductList);
-				productContainer.addNestedContainerProperty("brand.name");
 				productTable.setContainerDataSource(productContainer);
 				productTable.setEditable(false);
-				productTable.setVisibleColumns(new String[]{"barcode", "name", "brand.name", "productType", "transactionTime"});
-				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "MARKA", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
+				productTable.refreshRowCache();
+		    }
+		});
+		
+		
+		listButton.addListener(new Button.ClickListener() {
+			@Override
+		    public void buttonClick(ClickEvent event) {
+				ekle.setEnabled(false);
+				kaydet.setEnabled(false);
+				sil.setEnabled(false);
+				ekleSayisi.setEnabled(false);
+				guncelle.setEnabled(true);
+				controlLayout.setEnabled(true);
+				productTable.setEnabled(true);
+				
+				if (brandSelect.getValue() != null) {
+					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
+				productTable.setTableFieldFactory(new TableFieldFactory() {
+		            @Override
+		            public Field createField(Container container, Object itemId,
+		                    Object propertyId, Component uiContext) {
+		                Field field = null;
+		                if ("name".equals(propertyId)) {
+		                	field = new TextField();
+		                    field.setWidth("315px");
+		                } else if ("barcode".equals(propertyId)) {
+		                	field = new TextField();
+		                } else if ("productType".equals(propertyId)) {
+		                	field = new TextField();
+		                } else if ("transactionTime".equals(propertyId)) {
+		                	field = new DateField();
+		                } else if ("sec".equals(propertyId)) {
+		                	field = new CheckBox();
+		                }
+		                return field;
+		            }
+		        });
+				productContainer.addAll(uiProductList);
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
 				productTable.refreshRowCache();
 		    }
 		});

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.criterion.Criterion;
+
 public interface CommonDaoI<T, ID extends Serializable> {
 	
 	public Class<T> getEntityClass();
@@ -13,6 +15,8 @@ public interface CommonDaoI<T, ID extends Serializable> {
     public List<T> findAll();
 
     public List<T> findByExample(final T exampleInstance);
+    
+    public List<T> findByCriteria(final Criterion... criterion);
 
     public List<T> findByNamedQuery(
         final String queryName,

@@ -2,6 +2,7 @@ package com.orma.api.impl;
 
 import java.util.List;
 
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -67,6 +68,11 @@ public class DefinitionAPI implements IDefinitionAPI {
 	public List<Product> getAllProducts() {
 		return productDao.findAll();
 	}
+	
+	@Override
+	public List<Product> getProductsByBrand(Brand brand) {
+		return productDao.findByCriteria(Restrictions.eq("brand.id", brand.getId()));
+	}
 
 	@Override
 	public void saveCompany(Company company) {
@@ -112,6 +118,22 @@ public class DefinitionAPI implements IDefinitionAPI {
 	public List<WarehouseRecord> getAllWarehouseRecords() {
 		return warehouseRecordDao.findAll();
 	}
+	
+	@Override
+	public List<WarehouseRecord> getWarehouseRecordsByWarehouseAndProduct(Warehouse warehouse, Product product) {
+		return warehouseRecordDao.findByCriteria(Restrictions.and(Restrictions.eq("warehouse.id", warehouse.getId()), 
+														  		  Restrictions.eq("product.id", product.getId())));
+	}
+	
+	@Override
+	public List<WarehouseRecord> getWarehouseRecordsByWarehouse(Warehouse warehouse) {
+		return warehouseRecordDao.findByCriteria(Restrictions.eq("warehouse.id", warehouse.getId()));
+	}
+	
+	@Override
+	public List<WarehouseRecord> getWarehouseRecordsByProduct(Product product) {
+		return warehouseRecordDao.findByCriteria(Restrictions.eq("product.id", product.getId()));
+	}
 
 	public void setBrandDao(BrandDaoI brandDao) {
 		this.brandDao = brandDao;
@@ -132,5 +154,5 @@ public class DefinitionAPI implements IDefinitionAPI {
 	public void setWarehouseRecordDao(WarehouseRecordDaoI warehouseRecordDao) {
 		this.warehouseRecordDao = warehouseRecordDao;
 	}
-
+	
 }
