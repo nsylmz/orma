@@ -4,11 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.ProjectionList;
 
 public interface CommonDaoI<T, ID extends Serializable> {
 	
 	public Class<T> getEntityClass();
+	
+	public EntityManager getEntityManager();
 
     public T findById(final ID id);
 
@@ -17,6 +22,8 @@ public interface CommonDaoI<T, ID extends Serializable> {
     public List<T> findByExample(final T exampleInstance);
     
     public List<T> findByCriteria(final Criterion... criterion);
+    
+    public List<T> findByCriteria(ProjectionList projections, final Criterion... criterion);
 
     public List<T> findByNamedQuery(
         final String queryName,

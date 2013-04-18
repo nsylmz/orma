@@ -10,12 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.orma.api.IDefinitionAPI;
 import com.orma.dao.BrandDaoI;
-import com.orma.dao.CompanyDaoI;
 import com.orma.dao.ProductDaoI;
 import com.orma.dao.WarehouseDaoI;
 import com.orma.dao.WarehouseRecordDaoI;
 import com.orma.domain.Brand;
-import com.orma.domain.Company;
 import com.orma.domain.Product;
 import com.orma.domain.Warehouse;
 import com.orma.domain.WarehouseRecord;
@@ -30,8 +28,8 @@ public class DefinitionAPI implements IDefinitionAPI {
 	@Autowired
 	private ProductDaoI productDao;
 
-	@Autowired
-	private CompanyDaoI companyDao;
+//	@Autowired
+//	private CompanyDaoI companyDao;
 
 	@Autowired
 	private WarehouseDaoI warehouseDao;
@@ -74,20 +72,20 @@ public class DefinitionAPI implements IDefinitionAPI {
 		return productDao.findByCriteria(Restrictions.eq("brand.id", brand.getId()));
 	}
 
-	@Override
-	public void saveCompany(Company company) {
-		companyDao.merge(company);
-	}
-	
-	@Override
-	public void deleteCompany(Company company) {
-		companyDao.delete(companyDao.findById(company.getId()));
-	}
-	
-	@Override
-	public List<Company> getAllCompanies() {
-		return companyDao.findAll();
-	}
+//	@Override
+//	public void saveCompany(Company company) {
+//		companyDao.merge(company);
+//	}
+//	
+//	@Override
+//	public void deleteCompany(Company company) {
+//		companyDao.delete(companyDao.findById(company.getId()));
+//	}
+//	
+//	@Override
+//	public List<Company> getAllCompanies() {
+//		return companyDao.findAll();
+//	}
 
 	@Override
 	public void saveWarehouse(Warehouse warehouse) {
@@ -134,17 +132,13 @@ public class DefinitionAPI implements IDefinitionAPI {
 	public List<WarehouseRecord> getWarehouseRecordsByProduct(Product product) {
 		return warehouseRecordDao.findByCriteria(Restrictions.eq("product.id", product.getId()));
 	}
-
+	
 	public void setBrandDao(BrandDaoI brandDao) {
 		this.brandDao = brandDao;
 	}
 
 	public void setProductDao(ProductDaoI productDao) {
 		this.productDao = productDao;
-	}
-
-	public void setCompanyDao(CompanyDaoI companyDao) {
-		this.companyDao = companyDao;
 	}
 
 	public void setWarehouseDao(WarehouseDaoI warehouseDao) {

@@ -1,6 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/main/java=ISO-8859-1
 encoding//src/main/java/com/orma/StockManagementApplication.java=UTF-8
+encoding//src/main/java/com/orma/api/impl/SearchAPI.java=UTF-8
+encoding//src/main/java/com/orma/domain/TransactionType.java=UTF-8
 encoding//src/main/java/com/orma/muhasebe/domain/isletme/IsletmeSayfa.java=UTF-8
 encoding//src/main/java/com/orma/muhasebe/domain/sayim/SayimDokuman.java=UTF-8
 encoding//src/main/java/com/orma/muhasebe/domain/sayim/SayimSatir.java=UTF-8

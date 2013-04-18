@@ -34,7 +34,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.addItem("Sayım Tartı");
 		
 		menuTree.addItem("Ürün Yönetimi");
-		menuTree.addItem("Firma Yönetimi");
+//		menuTree.addItem("Firma Yönetimi");
 		menuTree.addItem("Marka Yönetimi");
 		menuTree.addItem("Depo Yönetimi");
 		menuTree.addItem("Depo Kayıt Yönetimi");
@@ -43,7 +43,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setParent("Sayım Tartı", "Muhasebe Destek Programı");
 
 		menuTree.setParent("Ürün Yönetimi", "Depo Stok Yönetim Programı");
-		menuTree.setParent("Firma Yönetimi", "Depo Stok Yönetim Programı");
+//		menuTree.setParent("Firma Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Marka Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Depo Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Depo Kayıt Yönetimi", "Depo Stok Yönetim Programı");
@@ -51,7 +51,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setChildrenAllowed("İşletme Defteri", false);
 		menuTree.setChildrenAllowed("Sayım Tartı", false);
 		menuTree.setChildrenAllowed("Ürün Yönetimi", false);
-		menuTree.setChildrenAllowed("Firma Yönetimi", false);
+//		menuTree.setChildrenAllowed("Firma Yönetimi", false);
 		menuTree.setChildrenAllowed("Marka Yönetimi", false);
 		menuTree.setChildrenAllowed("Depo Yönetimi", false);
 		menuTree.setChildrenAllowed("Depo Kayıt Yönetimi", false);
@@ -99,13 +99,13 @@ public class StockManagementMenuLayout extends GridLayout implements
 //					layouts.put("warehouseRecord", appLayout);
 //				}
 				mainPanel.setSecondComponent(new WarehouseRecordManagement(2, 3));
-			} else if (event.getProperty().getValue().equals("Firma Yönetimi")) {
+//			} else if (event.getProperty().getValue().equals("Firma Yönetimi")) {
 //				appLayout = layouts.get("company");
 //				if (appLayout == null) {
 //					appLayout = new CompanyManagement(2, 2);
 //					layouts.put("company", appLayout);
 //				}
-				mainPanel.setSecondComponent(new CompanyManagement(2, 2));
+//				mainPanel.setSecondComponent(new CompanyManagement(2, 2));
 			} else if (event.getProperty().getValue().equals("Marka Yönetimi")) {
 //				appLayout = layouts.get("brand");
 //				if (appLayout == null) {

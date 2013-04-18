@@ -1,18 +1,22 @@
 package com.orma.ui;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.orma.api.IDefinitionAPI;
 import com.orma.domain.Brand;
-import com.orma.domain.IBaseEntity;
 import com.orma.domain.Product;
-import com.orma.utils.OrmaUtils;
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -52,6 +56,7 @@ public class ProductManagement extends GridLayout {
 	private BeanItemContainer<Product> productContainer;
 	private TextField ekleSayisi;
 	private Label ekleLabel = new Label("Ekleme Sayısı");
+	private DecimalFormat df = new DecimalFormat("#0.00", new DecimalFormatSymbols(new Locale("tr")));
 	
 	public ProductManagement(int columns, int rows) {
 		setSizeFull();
@@ -68,19 +73,33 @@ public class ProductManagement extends GridLayout {
 		
 		listButton = new Button("Sorgula");
 		
-		productTable = new Table("Ürün Yönetim Tablosu");
+		productTable = new Table("Ürün Yönetim Tablosu") {
+		    @Override
+		    protected String formatPropertyValue(Object rowId,
+		            Object colId, Property property) {
+		        // Format by property type
+		        if (property.getType() == Date.class) {
+		            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		            return df.format((Date)property.getValue());
+		        } else if (property.getType() == BigDecimal.class) {
+		        	 return df.format((BigDecimal) property.getValue());
+		        }
+		        return super.formatPropertyValue(rowId, colId, property);
+		    }
+		};
 		productTable.setEnabled(false);
 		productTable.setImmediate(true);
 		productTable.setHeight("400px");
-		productTable.setWidth("750px");
+		productTable.setWidth("828px");
 		productContainer = new BeanItemContainer<Product>(Product.class);
 		productTable.setContainerDataSource(productContainer);
-		productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
-		productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
+		productTable.setVisibleColumns(new String[]{"barcode", "name", "buyPrice", "sellPrice", "transactionTime"});
+		productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ALIŞ FİYATI", "SATIŞ FİYATI", "TANIMLANMA ZAMANI"});
 		
 		productTable.setColumnWidth("barcode", 100);
 		productTable.setColumnWidth("name", 325);
-		productTable.setColumnWidth("productType", 135);
+		productTable.setColumnWidth("buyPrice", 100);
+		productTable.setColumnWidth("sellPrice", 100);
 		productTable.setColumnWidth("transactionTime", 135);
 		
 		listLayout.addComponent(brandSelect, 0 ,0);
@@ -141,9 +160,8 @@ public class ProductManagement extends GridLayout {
 				sil.setEnabled(true);
 				ekleSayisi.setEnabled(true);
 				guncelle.setEnabled(false);
-				
-				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "sec"});
-				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "SEÇ"});
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "buyPrice", "sellPrice", "sec"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ALIŞ FİYATI", "SATIŞ FİYATI", "SEÇ"});
 				productTable.setColumnWidth("sec", 135);
 		    }
 		});
@@ -156,8 +174,9 @@ public class ProductManagement extends GridLayout {
 						|| ekleSayisi.getValue().toString().length() == 0) {
 					emptyProduct = new Product();
 					emptyProduct.setName("");
+					emptyProduct.setBuyPrice(BigDecimal.ZERO);
+					emptyProduct.setSellPrice(BigDecimal.ZERO);
 					emptyProduct.setBarcode(0L);
-					emptyProduct.setProductType("");
 					if (brandSelect.getValue() != null) {
 						emptyProduct.setBrand((Brand) brandSelect.getValue());
 					} else {
@@ -168,8 +187,9 @@ public class ProductManagement extends GridLayout {
 					for (int i = 0; i < Integer.parseInt(ekleSayisi.getValue().toString()); i++) {
 						emptyProduct = new Product();
 						emptyProduct.setName("");
-						emptyProduct.setProductType("");
 						emptyProduct.setBarcode(0L);
+						emptyProduct.setBuyPrice(BigDecimal.ZERO);
+						emptyProduct.setSellPrice(BigDecimal.ZERO);
 						if (brandSelect.getValue() != null) {
 							emptyProduct.setBrand((Brand) brandSelect.getValue());
 						} else {
@@ -205,12 +225,12 @@ public class ProductManagement extends GridLayout {
 							&& product.getName() != null
 							&& product.getName().length() > 0
 							&& !product.getName().equals("null")) {
-						if (!OrmaUtils.listContains(baseProductList, (IBaseEntity)product)) {
+//						if (!OrmaUtils.listContains(baseProductList, (IBaseEntity)product)) {
 							product.setTransactionTime(new Date());
 							definitionAPI.saveProduct(product);
-						} else {
+//						} else {
 							// TODO throw exception
-						}
+//						}
 					}
 				}
 				productTable.setWidth("850px");
@@ -222,8 +242,8 @@ public class ProductManagement extends GridLayout {
 				productContainer = new BeanItemContainer<Product>(Product.class, uiProductList);
 				productTable.setContainerDataSource(productContainer);
 				productTable.setEditable(false);
-				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
-				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "buyPrice", "sellPrice", "transactionTime"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ALIŞ FİYATI", "SATIŞ FİYATI", "TANIMLANMA ZAMANI"});
 				productTable.refreshRowCache();
 		    }
 		});
@@ -251,7 +271,15 @@ public class ProductManagement extends GridLayout {
 								&& product.getName().length() > 0
 								&& !product.getName().equals("null") 
 								&& baseProductList.contains(product)) {
-							definitionAPI.deleteProduct(baseProductList.get(baseProductList.indexOf(product)));
+							try {
+								definitionAPI.deleteProduct(baseProductList.get(baseProductList.indexOf(product)));
+							} catch (Exception e) {
+								if (e.getMessage().contains("MySQLIntegrityConstraintViolationException")
+										|| e.getMessage().contains("ConstraintViolationException")) {
+									getWindow().showNotification(product.getName() + " ürününe ait depo kayıtkarını lütfen siliniz!!!");
+								}
+							}
+							
 						}
 					}
 				}
@@ -263,8 +291,8 @@ public class ProductManagement extends GridLayout {
 				productContainer = new BeanItemContainer<Product>(Product.class, uiProductList);
 				productTable.setContainerDataSource(productContainer);
 				productTable.setEditable(false);
-				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
-				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "buyPrice", "sellPrice", "transactionTime"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ALIŞ FİYATI", "SATIŞ FİYATI", "TANIMLANMA ZAMANI"});
 				productTable.refreshRowCache();
 		    }
 		});
@@ -296,6 +324,10 @@ public class ProductManagement extends GridLayout {
 		                    field.setWidth("315px");
 		                } else if ("barcode".equals(propertyId)) {
 		                	field = new TextField();
+		                } else if ("buyPrice".equals(propertyId)) {
+		                	field = new TextField();
+		                } else if ("sellPrice".equals(propertyId)) {
+		                	field = new TextField();
 		                } else if ("productType".equals(propertyId)) {
 		                	field = new TextField();
 		                } else if ("transactionTime".equals(propertyId)) {
@@ -306,9 +338,10 @@ public class ProductManagement extends GridLayout {
 		                return field;
 		            }
 		        });
+				productContainer.removeAllItems();
 				productContainer.addAll(uiProductList);
-				productTable.setVisibleColumns(new String[]{"barcode", "name", "productType", "transactionTime"});
-				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ÜRÜN TİPİ", "TANIMLANMA ZAMANI"});
+				productTable.setVisibleColumns(new String[]{"barcode", "name", "buyPrice", "sellPrice", "transactionTime"});
+				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ALIŞ FİYATI", "SATIŞ FİYATI", "TANIMLANMA ZAMANI"});
 				productTable.refreshRowCache();
 		    }
 		});

@@ -1,5 +1,6 @@
 package com.orma.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import com.orma.domain.Brand;
 import com.orma.domain.IBaseEntity;
 import com.orma.utils.OrmaUtils;
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -48,7 +50,18 @@ public class BrandManagement extends GridLayout {
 		setColumns(columns);
 		setRows(rows);
 		
-		brandTable = new Table("Marka Yönetim Tablosu");
+		brandTable = new Table("Marka Yönetim Tablosu") {
+		    @Override
+		    protected String formatPropertyValue(Object rowId,
+		            Object colId, Property property) {
+		        // Format by property type
+		        if (property.getType() == Date.class) {
+		            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		            return df.format((Date)property.getValue());
+		        }
+		        return super.formatPropertyValue(rowId, colId, property);
+		    }
+		};
 		brandTable.setImmediate(true);
 		brandTable.setHeight("400px");
 		brandTable.setWidth("350px");
@@ -77,6 +90,13 @@ public class BrandManagement extends GridLayout {
 		kaydet = new Button("Kaydet");
 		sil = new Button("Sil");
 		ekleSayisi = new TextField();
+		
+		ekle.setEnabled(false);
+		kaydet.setEnabled(false);
+		sil.setEnabled(false);
+		ekleSayisi.setEnabled(false);
+		guncelle.setEnabled(true);
+		
 		Label ekleLabel = new Label("Ekleme Sayısı");
 		ekleSayisi.setWidth("50px");
 		HorizontalLayout ekleLayout = new HorizontalLayout();
@@ -106,6 +126,11 @@ public class BrandManagement extends GridLayout {
 		guncelle.addListener(new Button.ClickListener() {
 			@Override
 		    public void buttonClick(ClickEvent event) {
+				ekle.setEnabled(true);
+				kaydet.setEnabled(true);
+				sil.setEnabled(true);
+				ekleSayisi.setEnabled(true);
+				guncelle.setEnabled(false);
 				brandTable.setEditable(true);
 				brandTable.setVisibleColumns(new String[]{"name", "sec"});
 				brandTable.setColumnHeaders(new String[]{"İSİM", "SEÇ"});
@@ -138,6 +163,13 @@ public class BrandManagement extends GridLayout {
 			@Override
 		    public void buttonClick(ClickEvent event) {
 				Brand brand = null;
+				
+				ekle.setEnabled(false);
+				kaydet.setEnabled(false);
+				sil.setEnabled(false);
+				ekleSayisi.setEnabled(false);
+				guncelle.setEnabled(true);
+				
 				baseBrandList = definitionAPI.getAllBrands();
 				for (Iterator i = brandContainer.getItemIds().iterator(); i.hasNext();) {
 					brand =  (Brand) i.next();
@@ -171,6 +203,13 @@ public class BrandManagement extends GridLayout {
 			@Override
 		    public void buttonClick(ClickEvent event) {
 				Brand brand = null;
+				
+				ekle.setEnabled(false);
+				kaydet.setEnabled(false);
+				sil.setEnabled(false);
+				ekleSayisi.setEnabled(false);
+				guncelle.setEnabled(true);
+				
 				baseBrandList = definitionAPI.getAllBrands();
 				for (Iterator i = brandContainer.getItemIds().iterator(); i.hasNext();) {
 					brand =  (Brand) i.next();
@@ -179,7 +218,14 @@ public class BrandManagement extends GridLayout {
 								&& brand.getName().length() > 0
 								&& !brand.getName().equals("null") 
 								&& baseBrandList.contains(brand)) {
-							definitionAPI.deleteBrand(baseBrandList.get(baseBrandList.indexOf(brand)));
+							try {
+								definitionAPI.deleteBrand(baseBrandList.get(baseBrandList.indexOf(brand)));
+							} catch (Exception e) {
+								if (e.getMessage().contains("MySQLIntegrityConstraintViolationException")
+										|| e.getMessage().contains("ConstraintViolationException")) {
+									getWindow().showNotification(brand.getName() + " markasına ait ürünleri lütfen siliniz!!!");
+								}
+							}
 						}
 					}
 				}

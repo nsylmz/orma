@@ -1,5 +1,7 @@
 package com.orma.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -11,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @SuppressWarnings("serial")
 @Entity
 @Table(name="PRODUCT",
-	   uniqueConstraints = @UniqueConstraint(columnNames = {"id", "NAME", "BARCODE"}))
+	   uniqueConstraints = @UniqueConstraint(columnNames = {"id", "BARCODE"}))
 public class Product extends BaseEntity implements IBaseEntity {
 	
 	@Column(name = "NAME")
@@ -22,9 +24,17 @@ public class Product extends BaseEntity implements IBaseEntity {
 	@NotNull
 	private Long barcode;
 	
-	@Column(name = "PRODUCT_TYPE")
+//	@Column(name = "PRODUCT_TYPE")
+//	@NotNull
+//	private String productType;
+	
 	@NotNull
-	private String productType;
+	@Column(name = "BUY_PRICE")
+	private BigDecimal buyPrice;
+	
+	@NotNull
+	@Column(name = "SELL_PRICE")
+	private BigDecimal sellPrice;
 	
 	@NotNull
 	@ManyToOne
@@ -47,12 +57,28 @@ public class Product extends BaseEntity implements IBaseEntity {
 		this.barcode = barcode;
 	}
 
-	public String getProductType() {
-		return productType;
+//	public String getProductType() {
+//		return productType;
+//	}
+//
+//	public void setProductType(String productType) {
+//		this.productType = productType;
+//	}
+//	
+	public BigDecimal getBuyPrice() {
+		return buyPrice;
 	}
 
-	public void setProductType(String productType) {
-		this.productType = productType;
+	public void setBuyPrice(BigDecimal buyPrice) {
+		this.buyPrice = buyPrice;
+	}
+
+	public BigDecimal getSellPrice() {
+		return sellPrice;
+	}
+
+	public void setSellPrice(BigDecimal sellPrice) {
+		this.sellPrice = sellPrice;
 	}
 
 	public Brand getBrand() {

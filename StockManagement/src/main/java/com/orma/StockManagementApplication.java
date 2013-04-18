@@ -11,7 +11,6 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ChameleonTheme;
 
 @SuppressWarnings("serial")
 public class StockManagementApplication extends Application
@@ -25,7 +24,7 @@ public class StockManagementApplication extends Application
     @Override
     public void init()
     {
-    	setTheme(ChameleonTheme.THEME_NAME);
+//    	setTheme(ChameleonTheme.THEME_NAME);
 //    	setTheme(Runo.THEME_NAME);
 //    	setTheme(Reindeer.THEME_NAME);
         mainWindow = new Window("Kantin Başkanlığı Programı Ana Ekran");

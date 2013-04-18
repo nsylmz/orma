@@ -3,7 +3,6 @@ package com.orma.api;
 import java.util.List;
 
 import com.orma.domain.Brand;
-import com.orma.domain.Company;
 import com.orma.domain.Product;
 import com.orma.domain.Warehouse;
 import com.orma.domain.WarehouseRecord;
@@ -24,11 +23,11 @@ public interface IDefinitionAPI {
 	
 	public List<Product> getProductsByBrand(Brand brand);
 	
-	public void saveCompany(Company company);
-	
-	public void deleteCompany(Company company);
-	
-	public List<Company> getAllCompanies();
+//	public void saveCompany(Company company);
+//	
+//	public void deleteCompany(Company company);
+//	
+//	public List<Company> getAllCompanies();
 	
 	public void saveWarehouse(Warehouse warehouse);
 	
@@ -47,5 +46,5 @@ public interface IDefinitionAPI {
 	public List<WarehouseRecord> getWarehouseRecordsByWarehouse(Warehouse warehouse);
 	
 	public List<WarehouseRecord> getWarehouseRecordsByProduct(Product product);
-
+	
 }

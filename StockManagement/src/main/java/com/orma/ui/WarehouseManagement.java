@@ -1,5 +1,6 @@
 package com.orma.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import com.orma.domain.IBaseEntity;
 import com.orma.domain.Warehouse;
 import com.orma.utils.OrmaUtils;
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -39,6 +41,7 @@ public class WarehouseManagement extends GridLayout {
 	private List<Warehouse> uiWarehouseList;
 	private Container warehouseContainer;
 	private TextField ekleSayisi;
+	private Label ekleLabel = new Label("Ekleme Sayısı");
 	
 	public WarehouseManagement(int columns, int rows) {
 		setSizeFull();
@@ -46,7 +49,18 @@ public class WarehouseManagement extends GridLayout {
 		setColumns(columns);
 		setRows(rows);
 		
-		warehouseTable = new Table("Marka Yönetim Tablosu");
+		warehouseTable = new Table("Marka Yönetim Tablosu") {
+		    @Override
+		    protected String formatPropertyValue(Object rowId,
+		            Object colId, Property property) {
+		        // Format by property type
+		        if (property.getType() == Date.class) {
+		            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		            return df.format((Date)property.getValue());
+		        }
+		        return super.formatPropertyValue(rowId, colId, property);
+		    }
+		};
 		warehouseTable.setImmediate(true);
 		warehouseTable.setHeight("400px");
 		warehouseTable.setWidth("463px");
@@ -69,7 +83,14 @@ public class WarehouseManagement extends GridLayout {
 		kaydet = new Button("Kaydet");
 		sil = new Button("Sil");
 		ekleSayisi = new TextField();
-		Label ekleLabel = new Label("Ekleme Sayısı");
+		
+		ekle.setEnabled(false);
+		kaydet.setEnabled(false);
+		sil.setEnabled(false);
+		ekleSayisi.setEnabled(false);
+		guncelle.setEnabled(true);
+		
+		
 		ekleSayisi.setWidth("50px");
 		HorizontalLayout ekleLayout = new HorizontalLayout();
 		ekleLayout.setSpacing(true);
@@ -93,11 +114,19 @@ public class WarehouseManagement extends GridLayout {
 		controlLayout.setComponentAlignment(ekleLayout, Alignment.MIDDLE_RIGHT);
 		controlLayout.setComponentAlignment(kaydet, Alignment.BOTTOM_RIGHT);
 		controlLayout.setComponentAlignment(sil, Alignment.BOTTOM_LEFT);
+		
 		addComponent(controlLayout, 0, 1);
 		setComponentAlignment(controlLayout, Alignment.TOP_CENTER);
+		
 		guncelle.addListener(new Button.ClickListener() {
 			@Override
 		    public void buttonClick(ClickEvent event) {
+				ekle.setEnabled(true);
+				kaydet.setEnabled(true);
+				sil.setEnabled(true);
+				ekleSayisi.setEnabled(true);
+				guncelle.setEnabled(false);
+				
 				warehouseTable.setEditable(true);
 				warehouseTable.setVisibleColumns(new String[]{"name", "place", "sec"});
 				warehouseTable.setColumnHeaders(new String[]{"İSİM", "YER", "SEÇ"});
@@ -131,6 +160,11 @@ public class WarehouseManagement extends GridLayout {
 			@SuppressWarnings("rawtypes")
 			@Override
 		    public void buttonClick(ClickEvent event) {
+				ekle.setEnabled(false);
+				kaydet.setEnabled(false);
+				sil.setEnabled(false);
+				ekleSayisi.setEnabled(false);
+				guncelle.setEnabled(true);
 				Warehouse warehouse = null;
 				baseWarehouseList = definitionAPI.getAllWarehouses();
 				for (Iterator i = warehouseContainer.getItemIds().iterator(); i.hasNext();) {
@@ -162,6 +196,11 @@ public class WarehouseManagement extends GridLayout {
 			@SuppressWarnings("rawtypes")
 			@Override
 		    public void buttonClick(ClickEvent event) {
+				ekle.setEnabled(false);
+				kaydet.setEnabled(false);
+				sil.setEnabled(false);
+				ekleSayisi.setEnabled(false);
+				guncelle.setEnabled(true);
 				Warehouse warehouse = null;
 				baseWarehouseList = definitionAPI.getAllWarehouses();
 				for (Iterator i = warehouseContainer.getItemIds().iterator(); i.hasNext();) {

@@ -12,7 +12,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.orma.dao.CommonDaoI;
@@ -115,10 +117,39 @@ public class CommonDaoImpl<T, ID extends Serializable> implements CommonDaoI<T, 
 		return entityManager;
 	}
 
+	public List<T> findByCriteria(ProjectionList projections, final Criterion... criterion) {
+		return findByCriteria(-1, -1, projections, criterion);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<T> findByCriteria(final int firstResult,
+			final int maxResults, final ProjectionList projections, 
+			final Criterion... criterion) {
+		
+		Session session = (Session) getEntityManager().getDelegate();
+		Criteria crit = session.createCriteria(getEntityClass());
+		crit.setProjection(projections);
+		crit.setResultTransformer(Transformers.aliasToBean(getEntityClass()));
+		for (final Criterion c : criterion) {
+			crit.add(c);
+		}
+
+		if (firstResult > 0) {
+			crit.setFirstResult(firstResult);
+		}
+
+		if (maxResults > 0) {
+			crit.setMaxResults(maxResults);
+		}
+
+		final List<T> result = crit.list();
+		return result;
+	}
+	
 	public List<T> findByCriteria(final Criterion... criterion) {
 		return findByCriteria(-1, -1, criterion);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public List<T> findByCriteria(final int firstResult,
 			final int maxResults, final Criterion... criterion) {

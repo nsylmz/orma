@@ -2,6 +2,8 @@ package com.orma.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -24,21 +26,14 @@ public class WarehouseRecord extends BaseEntity {
 
 	@NotNull
 	@Column(name = "AMOUNT")
-	private Integer amount;
-	
-	@NotNull
-	@Column(name = "BUY_PRICE")
-	private Integer buyPrice;
-	
-	@NotNull
-	@Column(name = "SELL_PRICE")
-	private Integer sellPrice;
+	private Long amount;
 
 	@Column(name = "BILL_NUMBER")
 	private Long billNumber;
 
-	@Column(name = "PLACE")
-	private String place;
+	@Column(name = "TRANSACTION_TYPE")
+	@Enumerated(EnumType.STRING)
+	private TransactionType transactionType;
 
 	public Product getProduct() {
 		return product;
@@ -56,28 +51,12 @@ public class WarehouseRecord extends BaseEntity {
 		this.warehouse = warehouse;
 	}
 
-	public Integer getAmount() {
+	public Long getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Integer amount) {
+	public void setAmount(Long amount) {
 		this.amount = amount;
-	}
-	
-	public Integer getBuyPrice() {
-		return buyPrice;
-	}
-
-	public void setBuyPrice(Integer buyPrice) {
-		this.buyPrice = buyPrice;
-	}
-
-	public Integer getSellPrice() {
-		return sellPrice;
-	}
-
-	public void setSellPrice(Integer sellPrice) {
-		this.sellPrice = sellPrice;
 	}
 
 	public Long getBillNumber() {
@@ -88,12 +67,12 @@ public class WarehouseRecord extends BaseEntity {
 		this.billNumber = billNumber;
 	}
 
-	public String getPlace() {
-		return place;
+	public TransactionType getTransactionType() {
+		return transactionType;
 	}
 
-	public void setPlace(String place) {
-		this.place = place;
+	public void setTransactionType(TransactionType transactionType) {
+		this.transactionType = transactionType;
 	}
 
 }
