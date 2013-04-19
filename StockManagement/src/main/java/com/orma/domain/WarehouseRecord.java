@@ -1,5 +1,7 @@
 package com.orma.domain;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @SuppressWarnings("serial")
@@ -30,6 +34,11 @@ public class WarehouseRecord extends BaseEntity {
 
 	@Column(name = "BILL_NUMBER")
 	private Long billNumber;
+	
+	@NotNull
+	@Column(name = "DEPLOYMENT_DATE")
+	@Temporal(TemporalType.DATE)
+	private Date deploymentDate;
 
 	@Column(name = "TRANSACTION_TYPE")
 	@Enumerated(EnumType.STRING)
@@ -65,6 +74,14 @@ public class WarehouseRecord extends BaseEntity {
 
 	public void setBillNumber(Long billNumber) {
 		this.billNumber = billNumber;
+	}
+	
+	public Date getDeploymentDate() {
+		return deploymentDate;
+	}
+
+	public void setDeploymentDate(Date deploymentDate) {
+		this.deploymentDate = deploymentDate;
 	}
 
 	public TransactionType getTransactionType() {

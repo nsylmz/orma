@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.tepi.filtertable.FilterTable;
 
 import com.orma.api.IDefinitionAPI;
 import com.orma.api.ISearchAPI;
@@ -35,7 +36,6 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.TextField;
 
@@ -52,7 +52,7 @@ public class WarehouseRecordManagement extends GridLayout {
 	private GridLayout controlLayout = new GridLayout(5,2);
 	private GridLayout listLayout = new GridLayout(2,4);
 	private HorizontalLayout ekleLayout = new HorizontalLayout();
-	private Table recordTable;
+	private FilterTable recordTable;
 	private Select warehouseSelect;
 	private Select brandSelect;
 	private Select productSelect;
@@ -73,7 +73,7 @@ public class WarehouseRecordManagement extends GridLayout {
 	private List<Brand> brands;
 	private List<Product> products;
 	private List<Warehouse> warehouses;
-	private DecimalFormat df = new DecimalFormat("#0.00", new DecimalFormatSymbols(new Locale("tr")));
+	private DecimalFormat df = new DecimalFormat("#0,00", new DecimalFormatSymbols(new Locale("tr")));
 	private ProductTotalInfo ptInfo = null; 
 	
 	public WarehouseRecordManagement(int columns, int rows) {
@@ -105,7 +105,7 @@ public class WarehouseRecordManagement extends GridLayout {
 		productSelect.setItemCaptionPropertyId("name");
 		productSelect.setImmediate(true);
 		
-		recordTable = new Table("Depo Kayıt Tablosu") {
+		recordTable = new FilterTable("Depo Kayıt Tablosu") {
 		    @Override
 		    protected String formatPropertyValue(Object rowId,
 		            Object colId, Property property) {
@@ -120,22 +120,23 @@ public class WarehouseRecordManagement extends GridLayout {
 		    }
 		};
 		
-		
+		recordTable.setFilterBarVisible(true);
 		recordTable.setHeight("400px");
-		recordTable.setWidth("527px");
+		recordTable.setWidth("662px");
 
 		uiRecordList = definitionAPI.getAllWarehouseRecords();
 		recordContainer = new BeanItemContainer<WarehouseRecord>(WarehouseRecord.class);
 		recordTable.setContainerDataSource(recordContainer);
 		
-		recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "transactionTime"});
-		recordTable.setColumnHeaders(new String[]{"İŞLEM TİPİ", "MİKTAR", "FATURA NO", "TANIMLANMA ZAMANI"});
+		recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "transactionTime"});
+		recordTable.setColumnHeaders(new String[]{"İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "TANIMLANMA ZAMANI"});
 		recordTable.setFooterVisible(true);
 		recordTable.setColumnFooter("transactionType", "TOPLAM MİKTAR");
 		recordTable.setColumnFooter("amount", "");
 		recordTable.setColumnWidth("amount", 100);
 		recordTable.setColumnWidth("billNumber", 100);
 		recordTable.setColumnWidth("transactionType", 135);
+		recordTable.setColumnWidth("deploymentDate", 135);
 		recordTable.setColumnWidth("transactionTime", 135);
 		recordTable.setImmediate(true);
 		
@@ -218,8 +219,8 @@ public class WarehouseRecordManagement extends GridLayout {
 				guncelle.setEnabled(false);
 				recordTable.setEditable(true);
 				
-				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "sec"});
-				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "Seç"});
+				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "sec"});
+				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "Seç"});
 				recordTable.setColumnWidth("sec", 135);
 				if (ptInfo != null) {
 					recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
@@ -313,8 +314,8 @@ public class WarehouseRecordManagement extends GridLayout {
 				recordContainer = new BeanItemContainer<WarehouseRecord>(WarehouseRecord.class, uiRecordList);
 				recordTable.setContainerDataSource(recordContainer);
 				recordTable.setEditable(false);
-				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "transactionTime"});
-				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "TANIMLANMA ZAMANI"});
+				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "transactionTime"});
+				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "TANIMLANMA ZAMANI"});
 				ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
 				recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
 				recordTable.setColumnFooter("billNumber", "ALIŞ " + df.format(ptInfo.getTotalBuy()));
@@ -358,8 +359,8 @@ public class WarehouseRecordManagement extends GridLayout {
 				recordContainer = new BeanItemContainer<WarehouseRecord>(WarehouseRecord.class, uiRecordList);
 				recordTable.setContainerDataSource(recordContainer);
 				recordTable.setEditable(false);
-				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "transactionTime"});
-				recordTable.setColumnHeaders(new String[]{"İŞLEM TİPİ", "MİKTAR", "FATURA NO", "TANIMLANMA ZAMANI"});
+				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "transactionTime"});
+				recordTable.setColumnHeaders(new String[]{"İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "TANIMLANMA ZAMANI"});
 				recordTable.setColumnFooter("transactionType", "TOPLAM");
 				ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
 				recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
@@ -428,6 +429,8 @@ public class WarehouseRecordManagement extends GridLayout {
 		                	field = new TextField();
 		                } else if ("transactionTime".equals(propertyId)) {
 		                	field = new DateField();
+		                } else if ("deploymentDate".equals(propertyId)) {
+		                	field = new DateField();
 		                } else if ("sec".equals(propertyId)) {
 		                	field = new CheckBox();
 		                } else if ("transactionType".equals(propertyId)) {
@@ -450,8 +453,8 @@ public class WarehouseRecordManagement extends GridLayout {
 				recordContainer.addAll(uiRecordList);
 				ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
 				recordTable.setFooterVisible(true);
-				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "transactionTime"});
-				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "TANIMLANMA ZAMANI"});
+				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "transactionTime"});
+				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "TANIMLANMA ZAMANI"});
 				recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
 				recordTable.setColumnFooter("billNumber", "ALIŞ " + df.format(ptInfo.getTotalBuy()));
 				recordTable.setColumnFooter("transactionTime", "SATIŞ " + df.format(ptInfo.getTotalSell()));

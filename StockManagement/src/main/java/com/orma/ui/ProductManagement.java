@@ -56,7 +56,7 @@ public class ProductManagement extends GridLayout {
 	private BeanItemContainer<Product> productContainer;
 	private TextField ekleSayisi;
 	private Label ekleLabel = new Label("Ekleme Sayısı");
-	private DecimalFormat df = new DecimalFormat("#0.00", new DecimalFormatSymbols(new Locale("tr")));
+	private DecimalFormat df = new DecimalFormat("#0,00", new DecimalFormatSymbols(new Locale("tr")));
 	
 	public ProductManagement(int columns, int rows) {
 		setSizeFull();

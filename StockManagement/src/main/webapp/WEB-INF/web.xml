@@ -19,6 +19,11 @@
             <param-name>application</param-name>
             <param-value>com.orma.StockManagementApplication</param-value>
         </init-param>
+        <init-param>
+		    <param-name>widgetset</param-name>
+		    <!-- param-value>org.tepi.FilterTable</param-value -->
+		    <param-value>com.orma.widgetsets.AppWidgetSet</param-value>
+		</init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>Vaadin Application Servlet</servlet-name>
@@ -34,5 +39,7 @@
 	   <listener-class>
 	        org.springframework.web.context.ContextLoaderListener
 	   </listener-class>
-	</listener> 
+	</listener>
+	
+	
 </web-app>

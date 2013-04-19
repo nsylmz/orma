@@ -56,7 +56,7 @@ public class BrandManagement extends GridLayout {
 		            Object colId, Property property) {
 		        // Format by property type
 		        if (property.getType() == Date.class) {
-		            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		            return df.format((Date)property.getValue());
 		        }
 		        return super.formatPropertyValue(rowId, colId, property);
