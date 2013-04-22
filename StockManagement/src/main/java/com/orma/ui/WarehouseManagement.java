@@ -18,10 +18,15 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
@@ -55,12 +60,36 @@ public class WarehouseManagement extends GridLayout {
 		            Object colId, Property property) {
 		        // Format by property type
 		        if (property.getType() == Date.class) {
-		            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		            return df.format((Date)property.getValue());
 		        }
 		        return super.formatPropertyValue(rowId, colId, property);
 		    }
 		};
+		warehouseTable.setTableFieldFactory(new TableFieldFactory() {
+            @Override
+            public Field createField(Container container, Object itemId,
+                    Object propertyId, Component uiContext) {
+                Field field = null;
+                if ("name".equals(propertyId)) {
+                	field = new TextField();
+                	field.setWidth("177");
+                	field.setHeight("24");
+                } else if ("place".equals(propertyId)) {
+                	field = new TextField();
+                	field.setWidth("90");
+                	field.setHeight("24");
+                } else if ("transactionTime".equals(propertyId)) {
+                	field = new DateField();
+                	((DateField) field).setDateFormat("yyyy-MM-dd");
+                	field.setWidth("125");
+                	field.setHeight("24");
+                } else if ("sec".equals(propertyId)) {
+                	field = new CheckBox();
+                }
+                return field;
+            }
+        });
 		warehouseTable.setImmediate(true);
 		warehouseTable.setHeight("400px");
 		warehouseTable.setWidth("463px");

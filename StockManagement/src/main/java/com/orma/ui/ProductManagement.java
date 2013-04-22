@@ -56,7 +56,7 @@ public class ProductManagement extends GridLayout {
 	private BeanItemContainer<Product> productContainer;
 	private TextField ekleSayisi;
 	private Label ekleLabel = new Label("Ekleme Sayısı");
-	private DecimalFormat df = new DecimalFormat("#0,00", new DecimalFormatSymbols(new Locale("tr")));
+	private DecimalFormat df = new DecimalFormat("#,###,##0.00", new DecimalFormatSymbols(new Locale("en")));
 	
 	public ProductManagement(int columns, int rows) {
 		setSizeFull();
@@ -79,7 +79,7 @@ public class ProductManagement extends GridLayout {
 		            Object colId, Property property) {
 		        // Format by property type
 		        if (property.getType() == Date.class) {
-		            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+		            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 		            return df.format((Date)property.getValue());
 		        } else if (property.getType() == BigDecimal.class) {
 		        	 return df.format((BigDecimal) property.getValue());
@@ -90,7 +90,7 @@ public class ProductManagement extends GridLayout {
 		productTable.setEnabled(false);
 		productTable.setImmediate(true);
 		productTable.setHeight("400px");
-		productTable.setWidth("828px");
+		productTable.setWidth("848px");
 		productContainer = new BeanItemContainer<Product>(Product.class);
 		productTable.setContainerDataSource(productContainer);
 		productTable.setVisibleColumns(new String[]{"barcode", "name", "buyPrice", "sellPrice", "transactionTime"});
@@ -98,6 +98,7 @@ public class ProductManagement extends GridLayout {
 		
 		productTable.setColumnWidth("barcode", 100);
 		productTable.setColumnWidth("name", 325);
+		productTable.setColumnWidth("productType", 100);
 		productTable.setColumnWidth("buyPrice", 100);
 		productTable.setColumnWidth("sellPrice", 100);
 		productTable.setColumnWidth("transactionTime", 135);
@@ -319,19 +320,35 @@ public class ProductManagement extends GridLayout {
 		            public Field createField(Container container, Object itemId,
 		                    Object propertyId, Component uiContext) {
 		                Field field = null;
+		                productTable.setColumnWidth("barcode", 120);
+		        		productTable.setColumnWidth("name", 325);
+		        		productTable.setColumnWidth("buyPrice", 100);
+		        		productTable.setColumnWidth("sellPrice", 100);
+		        		productTable.setColumnWidth("transactionTime", 135);
 		                if ("name".equals(propertyId)) {
 		                	field = new TextField();
-		                    field.setWidth("315px");
+		                    field.setWidth("315");
+		                    field.setHeight("24");
 		                } else if ("barcode".equals(propertyId)) {
 		                	field = new TextField();
+		                	field.setWidth("110");
+		                	field.setHeight("24");
 		                } else if ("buyPrice".equals(propertyId)) {
 		                	field = new TextField();
+		                	field.setWidth("90");
+		                	field.setHeight("24");
 		                } else if ("sellPrice".equals(propertyId)) {
 		                	field = new TextField();
+		                	field.setWidth("90");
+		                	field.setHeight("24");
 		                } else if ("productType".equals(propertyId)) {
 		                	field = new TextField();
+		                	field.setWidth("90");
+		                	field.setHeight("24");
 		                } else if ("transactionTime".equals(propertyId)) {
 		                	field = new DateField();
+		                	field.setWidth("125");
+		                	field.setHeight("24");
 		                } else if ("sec".equals(propertyId)) {
 		                	field = new CheckBox();
 		                }
