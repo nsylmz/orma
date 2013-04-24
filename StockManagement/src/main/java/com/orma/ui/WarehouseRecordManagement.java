@@ -124,7 +124,6 @@ public class WarehouseRecordManagement extends GridLayout {
 		recordTable.setHeight("400px");
 		recordTable.setWidth("672px");
 
-		uiRecordList = definitionAPI.getAllWarehouseRecords();
 		recordContainer = new BeanItemContainer<WarehouseRecord>(WarehouseRecord.class);
 		recordTable.setContainerDataSource(recordContainer);
 		
@@ -341,8 +340,6 @@ public class WarehouseRecordManagement extends GridLayout {
 				WarehouseRecord warehouseRecord = null;
 				baseRecordList = definitionAPI.getAllWarehouseRecords();
 				
-				
-				
 				for (Iterator i = recordContainer.getItemIds().iterator(); i.hasNext();) {
 					warehouseRecord =  (WarehouseRecord) i.next();
 					if (warehouseRecord.isSec()) {
@@ -355,8 +352,10 @@ public class WarehouseRecordManagement extends GridLayout {
 				}
 				if (productSelect.getValue() != null 
 						&& warehouseSelect.getValue() != null) {
-					uiRecordList = definitionAPI.getWarehouseRecordsByWarehouseAndProduct((Warehouse) warehouseSelect.getValue(), 
-																						  (Product) productSelect.getValue());
+					uiRecordList = definitionAPI
+							.getWarehouseRecordsByWarehouseAndProduct(
+									(Warehouse) warehouseSelect.getValue(),
+									(Product) productSelect.getValue());
 				} else {
 					// TODO : throw exception
 				}
@@ -389,7 +388,6 @@ public class WarehouseRecordManagement extends GridLayout {
 						getWindow().showNotification(brand.getName().trim() + " markası için hiç ürün tanımlanmamış. Ürün Ekranından " + 
 													 brand.getName().trim() + " markası için tanımlı olan ürünleri kontrol ediniz.");
 					}
-					brand = (Brand) event.getProperty().getValue();
 				}
 			}
 		});

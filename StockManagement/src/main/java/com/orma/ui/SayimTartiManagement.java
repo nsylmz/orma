@@ -41,7 +41,7 @@ public class SayimTartiManagement extends GridLayout implements Button.ClickList
 	
 	public SayimTartiManagement() {
 		setSpacing(true);
-		setHeight("225px");
+		setHeight("250");
 		
 		setColumns(4);
 		setRows(6);

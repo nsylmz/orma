@@ -1,8 +1,14 @@
 package com.orma.api.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -17,11 +23,15 @@ import com.orma.dao.CompanyDaoI;
 import com.orma.dao.ProductDaoI;
 import com.orma.dao.WarehouseDaoI;
 import com.orma.dao.WarehouseRecordDaoI;
+import com.orma.domain.Brand;
 import com.orma.domain.Product;
 import com.orma.domain.TransactionType;
 import com.orma.domain.Warehouse;
 import com.orma.domain.WarehouseRecord;
+import com.orma.utils.SqlConstants;
 import com.orma.vo.ProductTotalInfo;
+import com.orma.vo.ReportType;
+import com.orma.vo.WarehouseStockReport;
 
 @Transactional(propagation = Propagation.REQUIRED)
 @Component
@@ -41,6 +51,143 @@ public class SearchAPI implements ISearchAPI {
 
 	@Autowired
 	private WarehouseRecordDaoI warehouseRecordDao;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
+	
+	@SuppressWarnings("unchecked")
+	public List<WarehouseStockReport> getReportsByWarehouseOrProductOrBrand(Warehouse warehouse, Product product, Brand brand, ReportType reportType) {
+		
+		List<WarehouseStockReport> reportList = new ArrayList<WarehouseStockReport>();
+		Session session = (Session) entityManager.getDelegate();
+		SQLQuery query = null;
+		List<Object[]> results = null;
+		Object[] row = null;
+		WarehouseStockReport report = null;
+		
+		if ((warehouse != null && warehouse.getId() != null)
+				&& (product != null && product.getId() != null)
+				&& (brand != null && brand.getId() != null)
+				&& reportType.equals(ReportType.warehouseAndBrandAndProduct)) {
+			query = session.createSQLQuery(SqlConstants.reportByWarehouseAndBrandAndProduct);
+			query.addScalar("wName");
+			query.addScalar("bName");
+			query.addScalar("pName");
+			query.addScalar("total_amount");
+			query.addScalar("total_buy");
+			query.addScalar("total_sell");
+			query.setLong(0, warehouse.getId());
+			query.setLong(1, brand.getId());
+			query.setLong(2, product.getId());
+			results = query.list();
+			
+			for (int i = 0; i < results.size(); i++) {
+				row = results.get(i);
+				report = new WarehouseStockReport();
+				report.setWarehouseName(((String)row[0]).trim());
+				report.setBrandName(((String)row[1]).trim());
+				report.setProductName(((String)row[2]).trim());
+				report.setTotalAmount(((BigDecimal)row[3]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[4]);
+				report.setTotalSellPrice((BigDecimal)row[5]);
+			}
+		} else if ((warehouse != null && warehouse.getId() != null)
+				&& reportType.equals(ReportType.brandsByWarehouse)) {
+			query = session.createSQLQuery(SqlConstants.reportBrandsByWarehouse);
+			query.setLong(0, warehouse.getId());
+			query.addScalar("bName");
+			query.addScalar("total_amount");
+			query.addScalar("total_buy");
+			query.addScalar("total_sell");
+			results = query.list();
+			for (int i = 0; i < results.size(); i++) {
+				row = results.get(i);
+				report = new WarehouseStockReport();
+				report.setBrandName(((String)row[0]).trim());
+				report.setTotalAmount(((BigDecimal)row[1]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[2]);
+				report.setTotalSellPrice((BigDecimal)row[3]);
+				reportList.add(report);
+			}
+		} else if ((brand != null && brand.getId() != null)
+				&& (product != null && product.getId() != null)
+				&& reportType.equals(ReportType.brandAndProduct)) {
+			query = session.createSQLQuery(SqlConstants.reportByBrandAndProduct);
+			query.setLong(0, brand.getId());
+			query.setLong(1, product.getId());
+			query.addScalar("wName");
+			query.addScalar("bName");
+			query.addScalar("pName");
+			query.addScalar("total_amount");
+			query.addScalar("total_buy");
+			query.addScalar("total_sell");
+			results = query.list();
+			for (int i = 0; i < results.size(); i++) {
+				row = results.get(i);
+				report = new WarehouseStockReport();
+				report.setWarehouseName(((String)row[0]).trim());
+				report.setBrandName(((String)row[1]).trim());
+				report.setProductName(((String)row[2]).trim());
+				report.setTotalAmount(((BigDecimal)row[3]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[4]);
+				report.setTotalSellPrice((BigDecimal)row[5]);
+				reportList.add(report);
+			}
+		} else if (reportType.equals(ReportType.general)) {
+			query = session.createSQLQuery(SqlConstants.reportGeneral);
+			query.addScalar("wName");
+			query.addScalar("bName");
+			query.addScalar("pName");
+			query.addScalar("total_amount");
+			query.addScalar("total_buy");
+			query.addScalar("total_sell");
+			results = query.list();
+			for (int i = 0; i < results.size(); i++) {
+				row = results.get(i);
+				report = new WarehouseStockReport();
+				report.setWarehouseName(((String)row[0]).trim());
+				report.setBrandName(((String)row[1]).trim());
+				report.setProductName(((String)row[2]).trim());
+				report.setTotalAmount(((BigDecimal)row[3]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[4]);
+				report.setTotalSellPrice((BigDecimal)row[5]);
+				reportList.add(report);
+			}
+		} else if (reportType.equals(ReportType.brands)) {
+			query = session.createSQLQuery(SqlConstants.reportBrands);
+			query.addScalar("bName");
+			query.addScalar("total_amount");
+			query.addScalar("total_buy");
+			query.addScalar("total_sell");
+			results = query.list();
+			for (int i = 0; i < results.size(); i++) {
+				row = results.get(i);
+				report = new WarehouseStockReport();
+				report.setBrandName(((String)row[0]).trim());
+				report.setTotalAmount(((BigDecimal)row[1]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[2]);
+				report.setTotalSellPrice((BigDecimal)row[3]);
+				reportList.add(report);
+			}
+		} else if (reportType.equals(ReportType.warehouse)) {
+			query = session.createSQLQuery(SqlConstants.reportWarehouses);
+			query.addScalar("wName");
+			query.addScalar("total_amount");
+			query.addScalar("total_buy");
+			query.addScalar("total_sell");
+			results = query.list();
+			for (int i = 0; i < results.size(); i++) {
+				row = results.get(i);
+				report = new WarehouseStockReport();
+				report.setWarehouseName(((String)row[0]).trim());
+				report.setTotalAmount(((BigDecimal)row[1]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[2]);
+				report.setTotalSellPrice((BigDecimal)row[3]);
+				reportList.add(report);
+			}
+		}
+		return reportList;
+	}
 
 	public ProductTotalInfo getProductTotalInfoByWarehouse(Product product, Warehouse warehouse) {
 		ProjectionList proList = Projections.projectionList();
@@ -83,7 +230,7 @@ public class SearchAPI implements ISearchAPI {
 		ptInfo.setTotalSell(product.getSellPrice().multiply(BigDecimal.valueOf(amount)));
 		return ptInfo;
 	}
-
+	
 	public BrandDaoI getBrandDao() {
 		return brandDao;
 	}

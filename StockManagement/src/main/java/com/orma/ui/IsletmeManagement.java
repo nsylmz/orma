@@ -46,7 +46,7 @@ public class IsletmeManagement extends GridLayout implements Button.ClickListene
 	
 	public IsletmeManagement() {
 		setSpacing(true);
-		setHeight("225px");
+		setHeight("250");
 		
 		setColumns(4);
 		setRows(6);

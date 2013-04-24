@@ -280,7 +280,6 @@ public class ProductManagement extends GridLayout {
 									getWindow().showNotification(product.getName() + " ürününe ait depo kayıtkarını lütfen siliniz!!!");
 								}
 							}
-							
 						}
 					}
 				}

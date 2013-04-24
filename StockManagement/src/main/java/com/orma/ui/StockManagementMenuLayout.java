@@ -38,6 +38,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.addItem("Marka Yönetimi");
 		menuTree.addItem("Depo Yönetimi");
 		menuTree.addItem("Depo Kayıt Yönetimi");
+		menuTree.addItem("Depo Stok Raporları");
 		
 		menuTree.setParent("İşletme Defteri", "Muhasebe Destek Programı");
 		menuTree.setParent("Sayım Tartı", "Muhasebe Destek Programı");
@@ -47,7 +48,8 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setParent("Marka Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Depo Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Depo Kayıt Yönetimi", "Depo Stok Yönetim Programı");
-
+		menuTree.setParent("Depo Stok Raporları", "Depo Stok Yönetim Programı");
+		
 		menuTree.setChildrenAllowed("İşletme Defteri", false);
 		menuTree.setChildrenAllowed("Sayım Tartı", false);
 		menuTree.setChildrenAllowed("Ürün Yönetimi", false);
@@ -55,6 +57,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setChildrenAllowed("Marka Yönetimi", false);
 		menuTree.setChildrenAllowed("Depo Yönetimi", false);
 		menuTree.setChildrenAllowed("Depo Kayıt Yönetimi", false);
+		menuTree.setChildrenAllowed("Depo Stok Raporları", false);
 		
 		setSpacing(true);
 		addComponent(menuTree);
@@ -113,6 +116,8 @@ public class StockManagementMenuLayout extends GridLayout implements
 //					layouts.put("brand", appLayout);
 //				}
 				mainPanel.setSecondComponent(new BrandManagement(2, 2));
+			} else if (event.getProperty().getValue().equals("Depo Stok Raporları")) {
+				mainPanel.setSecondComponent(new WarehouseStockReportsManagement(2, 2));
 			}    
 		}
 	}
