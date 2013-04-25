@@ -69,16 +69,15 @@ public class DepoSayimWriter {
 				}
 				
 				cell = row.createCell(5);
-				cell.setCellValue(reports.get(i).getTotalBuyPrice().doubleValue());
-				if (reports.get(i).getProductBuyPrice() != null) {
-					cell.setCellValue(reports.get(i).getProductBuyPrice().doubleValue());
+				if (reports.get(i).getTotalBuyPrice() != null) {
+					cell.setCellValue(reports.get(i).getTotalBuyPrice().doubleValue());
 				} else {
 					cell.setCellValue(BigDecimal.ZERO.doubleValue());
 				}
 				
 				cell = row.createCell(6);
-				if (reports.get(i).getProductBuyPrice() != null) {
-					cell.setCellValue(reports.get(i).getProductBuyPrice().doubleValue());
+				if (reports.get(i).getProductSellPrice() != null) {
+					cell.setCellValue(reports.get(i).getProductSellPrice().doubleValue());
 				} else {
 					cell.setCellValue(BigDecimal.ZERO.doubleValue());
 				}
@@ -91,7 +90,8 @@ public class DepoSayimWriter {
 				}
 				
 				cell = row.createCell(8);
-				if (reports.get(i).getTotalSellPrice() != null) {
+				if (reports.get(i).getTotalBuyPrice() != null 
+						&& reports.get(i).getTotalSellPrice() != null) {
 					cell.setCellValue(reports.get(i).getTotalSellPrice().subtract(reports.get(i).getTotalBuyPrice()).doubleValue());
 				} else {
 					cell.setCellValue(BigDecimal.ZERO.doubleValue());
@@ -171,10 +171,10 @@ public class DepoSayimWriter {
 		cell = row.createCell(6);
 		cell.setCellValue("Satis Fiyati");
 		
-		cell = row.createCell(6);
+		cell = row.createCell(7);
 		cell.setCellValue("Satis Tutari");
 		
-		cell = row.createCell(7);
+		cell = row.createCell(8);
 		cell.setCellValue("Kar");
 	}
 	
@@ -190,10 +190,10 @@ public class DepoSayimWriter {
 		cell.setCellValue("===");
 		
 		cell = row.createCell(1);
-		cell.setCellValue("==============================");
+		cell.setCellValue("=========");
 		
 		cell = row.createCell(2);
-		cell.setCellValue("=========");
+		cell.setCellValue("==============================");
 		
 		cell = row.createCell(3);
 		cell.setCellValue("=========");
@@ -208,6 +208,9 @@ public class DepoSayimWriter {
 		cell.setCellValue("=========");
 		
 		cell = row.createCell(7);
+		cell.setCellValue("=========");
+		
+		cell = row.createCell(8);
 		cell.setCellValue("=========");
 	}
 	
@@ -221,10 +224,10 @@ public class DepoSayimWriter {
 		cell.setCellValue("---");
 		
 		cell = row.createCell(1);
-		cell.setCellValue("------------------------------");
+		cell.setCellValue("---------");
 		
 		cell = row.createCell(2);
-		cell.setCellValue("---------");
+		cell.setCellValue("------------------------------");
 		
 		cell = row.createCell(3);
 		cell.setCellValue("---------");
@@ -239,6 +242,9 @@ public class DepoSayimWriter {
 		cell.setCellValue("---------");
 		
 		cell = row.createCell(7);
+		cell.setCellValue("---------");
+		
+		cell = row.createCell(8);
 		cell.setCellValue("---------");
 	}
 }
