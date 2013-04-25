@@ -157,21 +157,22 @@ public class WarehouseStockReportsManagement extends GridLayout {
 		};
 		
 		reportTable.setHeight("400px");
-		reportTable.setWidth("880px");
+		reportTable.setWidth("933px");
 
 		reportContainer = new BeanItemContainer<WarehouseStockReport>(WarehouseStockReport.class);
 		reportTable.setContainerDataSource(reportContainer);
 		
-		reportTable.setVisibleColumns(new String[]{"warehouseName", "brandName", "productName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
-		reportTable.setColumnHeaders(new String[]{"DEPO", "MARKA", "ÜRÜN", "MİKTAR", "ALIŞ", "SATIŞ"});
+		reportTable.setVisibleColumns(new String[]{"warehouseName", "brandName", "productName", "productBarcode", "totalAmount", "totalBuyPrice", "totalSellPrice"});
+		reportTable.setColumnHeaders(new String[]{"DEPO", "MARKA", "ÜRÜN", "BARKOD", "MİKTAR", "ALIŞ", "SATIŞ"});
 		reportTable.setFooterVisible(true);
 		reportTable.setFilterBarVisible(true);
 		reportTable.setColumnWidth("warehouseName", 125);
 		reportTable.setColumnWidth("brandName", 125);
 		reportTable.setColumnWidth("productName", 250);
-		reportTable.setColumnWidth("totalAmount", 100);
-		reportTable.setColumnWidth("totalBuyPrice", 100);
-		reportTable.setColumnWidth("totalSellPrice", 100);
+		reportTable.setColumnWidth("productBarcode", 100);
+		reportTable.setColumnWidth("totalAmount", 80);
+		reportTable.setColumnWidth("totalBuyPrice", 80);
+		reportTable.setColumnWidth("totalSellPrice", 80);
 		reportTable.setImmediate(true);
 		
 		addComponent(listLayout, 0, 0);
@@ -230,9 +231,11 @@ public class WarehouseStockReportsManagement extends GridLayout {
 					brand = (Brand) event.getProperty().getValue();
 					products = definitionAPI.getProductsByBrand(brand);
 					if (products != null && products.size() > 0) {
+						urunLabel.setEnabled(true);
 						productSelect.setEnabled(true);
 						productContainer.removeAllItems();
 						productContainer.addAll(products);
+						listButton.setEnabled(false);
 					} else {
 						getWindow().showNotification(brand.getName().trim() + " markası için hiç ürün tanımlanmamış. Ürün Ekranından " + 
 													 brand.getName().trim() + " markası için tanımlı olan ürünleri kontrol ediniz.");
@@ -278,41 +281,52 @@ public class WarehouseStockReportsManagement extends GridLayout {
 				if (reportSelect.getValue() != null) {
 					type = (ReportType) reportSelect.getValue();
 					if (type.equals(ReportType.warehouse)) {
-						reportTable.setWidth("505px");
+						reportTable.setWidth("420px");
 						reportTable.setVisibleColumns(new String[]{"warehouseName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
 						reportTable.setColumnHeaders(new String[]{"DEPO", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("warehouseName", "TOPLAM");
+						reportTable.setColumnFooter("brandName", "");
+						reportTable.setColumnFooter("productName", "");
 						reportTable.setFilterFieldVisible("warehouseName", true);
 						reportTable.setFilterFieldVisible("brandName", false);
 						reportTable.setFilterFieldVisible("productName", false);
+						reportTable.setFilterFieldVisible("productBarcode", false);
 					} else if (type.equals(ReportType.brandsByWarehouse)) {
-						reportTable.setWidth("505px");
+						reportTable.setWidth("420px");
 						reportTable.setVisibleColumns(new String[]{"brandName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
 						reportTable.setColumnHeaders(new String[]{"MARKA", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("brandName", "TOPLAM");
+						reportTable.setColumnFooter("warehouseName", "");
+						reportTable.setColumnFooter("productName", "");
 						reportTable.setFilterFieldVisible("warehouseName", false);
 						reportTable.setFilterFieldVisible("brandName", true);
 						reportTable.setFilterFieldVisible("productName", false);
+						reportTable.setFilterFieldVisible("productBarcode", false);
 					} else if (type.equals(ReportType.general)
 							|| type.equals(ReportType.warehouseAndBrandAndProduct)
 							|| type.equals(ReportType.brandAndProduct)) {
-						reportTable.setWidth("880px");
-						reportTable.setVisibleColumns(new String[]{"warehouseName", "brandName", "productName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
-						reportTable.setColumnHeaders(new String[]{"DEPO", "MARKA", "ÜRÜN", "MİKTAR", "ALIŞ", "SATIŞ"});
+						reportTable.setWidth("933px");
+						reportTable.setVisibleColumns(new String[]{"warehouseName", "brandName", "productName", "productBarcode", "totalAmount", "totalBuyPrice", "totalSellPrice"});
+						reportTable.setColumnHeaders(new String[]{"DEPO", "MARKA", "ÜRÜN", "BARKOD", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("productName", "TOPLAM");
+						reportTable.setColumnFooter("warehouseName", "");
+						reportTable.setColumnFooter("brandName", "");
 						reportTable.setFilterFieldVisible("warehouseName", true);
 						reportTable.setFilterFieldVisible("brandName", true);
 						reportTable.setFilterFieldVisible("productName", true);
+						reportTable.setFilterFieldVisible("productBarcode", true);
 					} else if (type.equals(ReportType.brands)) {
-						reportTable.setWidth("630px");
-						reportTable.setVisibleColumns(new String[]{"warehouseName", "brandName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
-						reportTable.setColumnHeaders(new String[]{"DEPO", "MARKA", "MİKTAR", "ALIŞ", "SATIŞ"});
+						reportTable.setWidth("420px");
+						reportTable.setVisibleColumns(new String[]{"brandName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
+						reportTable.setColumnHeaders(new String[]{"MARKA", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("brandName", "TOPLAM");
+						reportTable.setColumnFooter("warehouseName", "");
+						reportTable.setColumnFooter("productName", "");
 						reportTable.setFilterFieldVisible("warehouseName", true);
 						reportTable.setFilterFieldVisible("brandName", true);
 						reportTable.setFilterFieldVisible("productName", false);
+						reportTable.setFilterFieldVisible("productBarcode", false);
 					}
-					reportTable.setColumnFooter("productName", "TOPLAM");
 				} else {
 					// TODO throw exception
 				}

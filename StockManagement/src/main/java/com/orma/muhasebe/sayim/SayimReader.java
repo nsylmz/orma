@@ -122,13 +122,13 @@ public class SayimReader {
 							satirCounter = 1;
 						}
 						satir = new SayimSatir();
-						satir.setUrunAdi(row.getCell(3).getStringCellValue());
-						satir.setMiktar(BigDecimal.valueOf(row.getCell(4).getNumericCellValue()));
-						satir.setBirimAlisFiyati(BigDecimal.valueOf(row.getCell(5).getNumericCellValue()));
-						satir.setToplamAlisTutari(BigDecimal.valueOf(row.getCell(6).getNumericCellValue()));
-						satir.setBirimSatisFiyati(BigDecimal.valueOf(row.getCell(7).getNumericCellValue()));
-						satir.setToplamSatisTutari(BigDecimal.valueOf(row.getCell(8).getNumericCellValue()));
-						satir.setKar(BigDecimal.valueOf(row.getCell(9).getNumericCellValue()));
+						satir.setUrunAdi(row.getCell(2).getStringCellValue());
+						satir.setMiktar(BigDecimal.valueOf(row.getCell(3).getNumericCellValue()));
+						satir.setBirimAlisFiyati(BigDecimal.valueOf(row.getCell(4).getNumericCellValue()));
+						satir.setToplamAlisTutari(BigDecimal.valueOf(row.getCell(5).getNumericCellValue()));
+						satir.setBirimSatisFiyati(BigDecimal.valueOf(row.getCell(6).getNumericCellValue()));
+						satir.setToplamSatisTutari(BigDecimal.valueOf(row.getCell(7).getNumericCellValue()));
+						satir.setKar(BigDecimal.valueOf(row.getCell(8).getNumericCellValue()));
 						sayimSatirList.add(satir);
 						satirCounter++;
 						

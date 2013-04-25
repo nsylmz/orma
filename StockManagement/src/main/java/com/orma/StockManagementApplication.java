@@ -45,7 +45,7 @@ public class StockManagementApplication extends Application
         horizontalSplitPanel = new HorizontalSplitPanel();
         horizontalSplitPanel.setStyleName("small");
         horizontalSplitPanel.setSplitPosition(20, Sizeable.UNITS_PERCENTAGE);
-        horizontalSplitPanel.setHeight("650px");
+        horizontalSplitPanel.setHeight("725px");
         horizontalSplitPanel.setWidth("100%");
         horizontalSplitPanel.setLocked(true);
         horizontalSplitPanel.addComponent(new StockManagementMenuLayout(horizontalSplitPanel));

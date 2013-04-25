@@ -1,6 +1,7 @@
 package com.orma.api.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,6 +74,7 @@ public class SearchAPI implements ISearchAPI {
 			query.addScalar("wName");
 			query.addScalar("bName");
 			query.addScalar("pName");
+			query.addScalar("pBarcode");
 			query.addScalar("total_amount");
 			query.addScalar("total_buy");
 			query.addScalar("total_sell");
@@ -87,9 +89,10 @@ public class SearchAPI implements ISearchAPI {
 				report.setWarehouseName(((String)row[0]).trim());
 				report.setBrandName(((String)row[1]).trim());
 				report.setProductName(((String)row[2]).trim());
-				report.setTotalAmount(((BigDecimal)row[3]).longValue());
-				report.setTotalBuyPrice((BigDecimal)row[4]);
-				report.setTotalSellPrice((BigDecimal)row[5]);
+				report.setProductBarcode(((BigInteger)row[3]).longValue());
+				report.setTotalAmount(((BigDecimal)row[4]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[5]);
+				report.setTotalSellPrice((BigDecimal)row[6]);
 			}
 		} else if ((warehouse != null && warehouse.getId() != null)
 				&& reportType.equals(ReportType.brandsByWarehouse)) {
@@ -118,6 +121,7 @@ public class SearchAPI implements ISearchAPI {
 			query.addScalar("wName");
 			query.addScalar("bName");
 			query.addScalar("pName");
+			query.addScalar("pBarcode");
 			query.addScalar("total_amount");
 			query.addScalar("total_buy");
 			query.addScalar("total_sell");
@@ -128,9 +132,10 @@ public class SearchAPI implements ISearchAPI {
 				report.setWarehouseName(((String)row[0]).trim());
 				report.setBrandName(((String)row[1]).trim());
 				report.setProductName(((String)row[2]).trim());
-				report.setTotalAmount(((BigDecimal)row[3]).longValue());
-				report.setTotalBuyPrice((BigDecimal)row[4]);
-				report.setTotalSellPrice((BigDecimal)row[5]);
+				report.setProductBarcode(((BigInteger)row[3]).longValue());
+				report.setTotalAmount(((BigDecimal)row[4]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[5]);
+				report.setTotalSellPrice((BigDecimal)row[6]);
 				reportList.add(report);
 			}
 		} else if (reportType.equals(ReportType.general)) {
@@ -138,6 +143,7 @@ public class SearchAPI implements ISearchAPI {
 			query.addScalar("wName");
 			query.addScalar("bName");
 			query.addScalar("pName");
+			query.addScalar("pBarcode");
 			query.addScalar("total_amount");
 			query.addScalar("total_buy");
 			query.addScalar("total_sell");
@@ -148,9 +154,36 @@ public class SearchAPI implements ISearchAPI {
 				report.setWarehouseName(((String)row[0]).trim());
 				report.setBrandName(((String)row[1]).trim());
 				report.setProductName(((String)row[2]).trim());
-				report.setTotalAmount(((BigDecimal)row[3]).longValue());
-				report.setTotalBuyPrice((BigDecimal)row[4]);
-				report.setTotalSellPrice((BigDecimal)row[5]);
+				report.setProductBarcode(((BigInteger)row[3]).longValue());
+				report.setTotalAmount(((BigDecimal)row[4]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[5]);
+				report.setTotalSellPrice((BigDecimal)row[6]);
+				reportList.add(report);
+			}
+		} else if (reportType.equals(ReportType.sayim)) {
+			query = session.createSQLQuery(SqlConstants.reportSayim);
+			query.addScalar("wName");
+			query.addScalar("bName");
+			query.addScalar("pName");
+			query.addScalar("pBarcode");
+			query.addScalar("pBuyPrice");
+			query.addScalar("pSellPrice");
+			query.addScalar("total_amount");
+			query.addScalar("total_buy");
+			query.addScalar("total_sell");
+			results = query.list();
+			for (int i = 0; i < results.size(); i++) {
+				row = results.get(i);
+				report = new WarehouseStockReport();
+				report.setWarehouseName(((String)row[0]).trim());
+				report.setBrandName(((String)row[1]).trim());
+				report.setProductName(((String)row[2]).trim());
+				report.setProductBarcode(((BigInteger)row[3]).longValue());
+				report.setProductBuyPrice(((BigDecimal)row[4]));
+				report.setProductSellPrice(((BigDecimal)row[5]));
+				report.setTotalAmount(((BigDecimal)row[6]).longValue());
+				report.setTotalBuyPrice((BigDecimal)row[7]);
+				report.setTotalSellPrice((BigDecimal)row[8]);
 				reportList.add(report);
 			}
 		} else if (reportType.equals(ReportType.brands)) {

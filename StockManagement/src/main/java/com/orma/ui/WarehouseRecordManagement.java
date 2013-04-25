@@ -50,12 +50,13 @@ public class WarehouseRecordManagement extends GridLayout {
 	ISearchAPI searchAPI;
 	
 	private GridLayout controlLayout = new GridLayout(5,2);
-	private GridLayout listLayout = new GridLayout(2,4);
+	private GridLayout listLayout = new GridLayout(2,6);
 	private HorizontalLayout ekleLayout = new HorizontalLayout();
 	private FilterTable recordTable;
 	private Select warehouseSelect;
 	private Select brandSelect;
 	private Select productSelect;
+	private Select barcodeSelect;
 	private Button listButton;
 	private Button ekle;
 	private Button sil;
@@ -65,9 +66,12 @@ public class WarehouseRecordManagement extends GridLayout {
 	private Label ekleLabel = new Label("Ekleme");
 	private Label markaLabel = new Label("Marka");
 	private Label depoLabel = new Label("Depo");
-	private Label urunLabel = new Label("Ürün");
+	private Label urunLabel = new Label("Ürün İsim");
+	private Label barkodLabel = new Label("Ürün Barkod");
+	private Label veyaLabel = new Label("Veya");
 	private BeanItemContainer<WarehouseRecord> recordContainer;
 	private BeanItemContainer<Product> productContainer;
+	private BeanItemContainer<Product> barcodeContainer;
 	private List<WarehouseRecord> baseRecordList;
 	private List<WarehouseRecord> uiRecordList;
 	private List<Brand> brands;
@@ -105,6 +109,14 @@ public class WarehouseRecordManagement extends GridLayout {
 		productSelect.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
 		productSelect.setItemCaptionPropertyId("name");
 		productSelect.setImmediate(true);
+		
+		barcodeSelect = new Select();
+		barcodeSelect.setEnabled(false);
+		barcodeContainer = new BeanItemContainer<Product>(Product.class);
+		barcodeSelect.setContainerDataSource(barcodeContainer);
+		barcodeSelect.setItemCaptionMode(Select.ITEM_CAPTION_MODE_PROPERTY);
+		barcodeSelect.setItemCaptionPropertyId("barcode");
+		barcodeSelect.setImmediate(true);
 		
 		recordTable = new FilterTable("Depo Kayıt Tablosu") {
 		    @Override
@@ -160,6 +172,7 @@ public class WarehouseRecordManagement extends GridLayout {
 		warehouseSelect.setWidth("350px");
 		brandSelect.setWidth("350px");
 		productSelect.setWidth("350px");
+		barcodeSelect.setWidth("350px");
 		
 		listLayout.setSpacing(true);
 		listLayout.addComponent(depoLabel, 0, 0);
@@ -171,14 +184,23 @@ public class WarehouseRecordManagement extends GridLayout {
 		listLayout.addComponent(urunLabel, 0, 2);
 		listLayout.addComponent(productSelect, 1 , 2);
 		
+		listLayout.addComponent(veyaLabel, 0, 3);
+		
+		listLayout.addComponent(barkodLabel, 0, 4);
+		listLayout.addComponent(barcodeSelect, 1 , 4);
+		
+		
 		listLayout.setSpacing(true);
-		listLayout.addComponent(listButton, 1, 3);
+		listLayout.addComponent(listButton, 1, 5);
 		listLayout.setComponentAlignment(depoLabel, Alignment.BOTTOM_CENTER);
 		listLayout.setComponentAlignment(warehouseSelect, Alignment.BOTTOM_CENTER);
 		listLayout.setComponentAlignment(markaLabel, Alignment.BOTTOM_CENTER);
 		listLayout.setComponentAlignment(brandSelect, Alignment.BOTTOM_CENTER);
 		listLayout.setComponentAlignment(urunLabel, Alignment.BOTTOM_CENTER);
 		listLayout.setComponentAlignment(productSelect, Alignment.BOTTOM_CENTER);
+		listLayout.setComponentAlignment(veyaLabel, Alignment.BOTTOM_CENTER);
+		listLayout.setComponentAlignment(barkodLabel, Alignment.BOTTOM_CENTER);
+		listLayout.setComponentAlignment(barcodeSelect, Alignment.BOTTOM_CENTER);
 		listLayout.setComponentAlignment(listButton, Alignment.BOTTOM_CENTER);
 		
 		addComponent(listLayout, 0, 0);
@@ -246,6 +268,8 @@ public class WarehouseRecordManagement extends GridLayout {
 					emptyWarehouseRecord.setTransactionType(TransactionType.girdi);
 					if (productSelect.getValue() != null) {
 						emptyWarehouseRecord.setProduct((Product) productSelect.getValue());
+					} else if (barcodeSelect.getValue() != null) {
+						emptyWarehouseRecord.setProduct((Product) barcodeSelect.getValue());
 					} else {
 						// TODO : throw exception
 					}
@@ -264,6 +288,8 @@ public class WarehouseRecordManagement extends GridLayout {
 						emptyWarehouseRecord.setTransactionType(TransactionType.girdi);
 						if (productSelect.getValue() != null) {
 							emptyWarehouseRecord.setProduct((Product) productSelect.getValue());
+						} else if (barcodeSelect.getValue() != null) {
+							emptyWarehouseRecord.setProduct((Product) barcodeSelect.getValue());
 						} else {
 							// TODO : throw exception
 						}
@@ -275,7 +301,15 @@ public class WarehouseRecordManagement extends GridLayout {
 						recordContainer.addItem(emptyWarehouseRecord);
 					}
 				}
-				ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				if (productSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else if (barcodeSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) barcodeSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
 				recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
 				recordTable.setColumnFooter("billNumber", "ALIŞ " + df.format(ptInfo.getTotalBuy()));
 				recordTable.setColumnFooter("deploymentDate", "SATIŞ " + df.format(ptInfo.getTotalSell()));
@@ -296,7 +330,6 @@ public class WarehouseRecordManagement extends GridLayout {
 				guncelle.setEnabled(true);
 				
 				WarehouseRecord warehouseRecord = null;
-				baseRecordList = definitionAPI.getAllWarehouseRecords();
 				for (Iterator i = recordContainer.getItemIds().iterator(); i.hasNext();) {
 					warehouseRecord =  (WarehouseRecord) i.next();
 					if (warehouseRecord.isSec() 
@@ -309,8 +342,18 @@ public class WarehouseRecordManagement extends GridLayout {
 //				recordTable.setWidth("850px");
 				if (productSelect.getValue() != null 
 						&& warehouseSelect.getValue() != null) {
+					
+				} else {
+					// TODO : throw exception
+				}
+				if (productSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
 					uiRecordList = definitionAPI.getWarehouseRecordsByWarehouseAndProduct((Warehouse) warehouseSelect.getValue(), 
-																						  (Product) productSelect.getValue());
+							  															  (Product) productSelect.getValue());
+				} else if (barcodeSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					uiRecordList = definitionAPI.getWarehouseRecordsByWarehouseAndProduct((Warehouse) warehouseSelect.getValue(), 
+							  															  (Product) barcodeSelect.getValue());
 				} else {
 					// TODO : throw exception
 				}
@@ -319,7 +362,15 @@ public class WarehouseRecordManagement extends GridLayout {
 				recordTable.setEditable(false);
 				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "transactionTime"});
 				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "TANIMLANMA ZAMANI"});
-				ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				if (productSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else if (barcodeSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) barcodeSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
 				recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
 				recordTable.setColumnFooter("billNumber", "ALIŞ " + df.format(ptInfo.getTotalBuy()));
 				recordTable.setColumnFooter("deploymentDate", "SATIŞ " + df.format(ptInfo.getTotalSell()));
@@ -365,7 +416,15 @@ public class WarehouseRecordManagement extends GridLayout {
 				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "transactionTime"});
 				recordTable.setColumnHeaders(new String[]{"İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "TANIMLANMA ZAMANI"});
 				recordTable.setColumnFooter("transactionType", "TOPLAM");
-				ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				if (productSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else if (barcodeSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) barcodeSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
 				recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
 				recordTable.setColumnFooter("billNumber", "ALIŞ " + df.format(ptInfo.getTotalBuy()));
 				recordTable.setColumnFooter("transactionTime", "SATIŞ " + df.format(ptInfo.getTotalSell()));
@@ -382,8 +441,14 @@ public class WarehouseRecordManagement extends GridLayout {
 					products = definitionAPI.getProductsByBrand(brand);
 					if (products != null && products.size() > 0) {
 						productSelect.setEnabled(true);
+						productSelect.setValue(null);
+						barcodeSelect.setValue(null);
+						barcodeSelect.setEnabled(true);
+						listButton.setEnabled(false);
 						productContainer.removeAllItems();
 						productContainer.addAll(products);
+						barcodeContainer.removeAllItems();
+						barcodeContainer.addAll(products);
 					} else {
 						getWindow().showNotification(brand.getName().trim() + " markası için hiç ürün tanımlanmamış. Ürün Ekranından " + 
 													 brand.getName().trim() + " markası için tanımlı olan ürünleri kontrol ediniz.");
@@ -397,6 +462,17 @@ public class WarehouseRecordManagement extends GridLayout {
 			public void valueChange(ValueChangeEvent event) {
 				if (event.getProperty().getValue() != null) {
 					listButton.setEnabled(true);
+					barcodeSelect.setValue(null);
+				}
+			}
+		});
+		
+		barcodeSelect.addListener(new Property.ValueChangeListener() {
+			@Override
+			public void valueChange(ValueChangeEvent event) {
+				if (event.getProperty().getValue() != null) {
+					listButton.setEnabled(true);
+					productSelect.setValue(null);
 				}
 			}
 		});
@@ -416,6 +492,10 @@ public class WarehouseRecordManagement extends GridLayout {
 						&& warehouseSelect.getValue() != null) {
 					uiRecordList = definitionAPI.getWarehouseRecordsByWarehouseAndProduct((Warehouse) warehouseSelect.getValue(), 
 																						  (Product) productSelect.getValue());
+				} else if (barcodeSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					uiRecordList = definitionAPI.getWarehouseRecordsByWarehouseAndProduct((Warehouse) warehouseSelect.getValue(), 
+							  															  (Product) barcodeSelect.getValue());
 				} else {
 					// TODO : throw exception
 				}
@@ -464,7 +544,16 @@ public class WarehouseRecordManagement extends GridLayout {
 		        });
 				recordContainer.removeAllItems();
 				recordContainer.addAll(uiRecordList);
-				ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				if (productSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) productSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else if (barcodeSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					ptInfo = searchAPI.getProductTotalInfoByWarehouse((Product) barcodeSelect.getValue(), (Warehouse) warehouseSelect.getValue());
+				} else {
+					// TODO : throw exception
+				}
+				
 				recordTable.setFooterVisible(true);
 				recordTable.setVisibleColumns(new String[]{"transactionType", "amount", "billNumber", "deploymentDate", "transactionTime"});
 				recordTable.setColumnHeaders(new String[]{ "İŞLEM TİPİ", "MİKTAR", "FATURA NO", "DEPO GİRİŞ TARİHİ", "TANIMLANMA ZAMANI"});
