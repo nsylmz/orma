@@ -281,7 +281,11 @@ public class WarehouseStockReportsManagement extends GridLayout {
 				if (reportSelect.getValue() != null) {
 					type = (ReportType) reportSelect.getValue();
 					if (type.equals(ReportType.warehouse)) {
-						reportTable.setWidth("420px");
+						if (uiReportList.size() < 15) {
+							reportTable.setWidth("420px");
+						} else {
+							reportTable.setWidth("440px");
+						}
 						reportTable.setVisibleColumns(new String[]{"warehouseName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
 						reportTable.setColumnHeaders(new String[]{"DEPO", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("warehouseName", "TOPLAM");
@@ -292,7 +296,11 @@ public class WarehouseStockReportsManagement extends GridLayout {
 						reportTable.setFilterFieldVisible("productName", false);
 						reportTable.setFilterFieldVisible("productBarcode", false);
 					} else if (type.equals(ReportType.brandsByWarehouse)) {
-						reportTable.setWidth("420px");
+						if (uiReportList.size() < 15) {
+							reportTable.setWidth("420px");
+						} else {
+							reportTable.setWidth("440px");
+						}
 						reportTable.setVisibleColumns(new String[]{"brandName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
 						reportTable.setColumnHeaders(new String[]{"MARKA", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("brandName", "TOPLAM");
@@ -306,6 +314,11 @@ public class WarehouseStockReportsManagement extends GridLayout {
 							|| type.equals(ReportType.warehouseAndBrandAndProduct)
 							|| type.equals(ReportType.brandAndProduct)) {
 						reportTable.setWidth("933px");
+						if (uiReportList.size() < 15) {
+							reportTable.setWidth("933px");
+						} else {
+							reportTable.setWidth("955px");
+						}
 						reportTable.setVisibleColumns(new String[]{"warehouseName", "brandName", "productName", "productBarcode", "totalAmount", "totalBuyPrice", "totalSellPrice"});
 						reportTable.setColumnHeaders(new String[]{"DEPO", "MARKA", "ÜRÜN", "BARKOD", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("productName", "TOPLAM");
@@ -316,7 +329,11 @@ public class WarehouseStockReportsManagement extends GridLayout {
 						reportTable.setFilterFieldVisible("productName", true);
 						reportTable.setFilterFieldVisible("productBarcode", true);
 					} else if (type.equals(ReportType.brands)) {
-						reportTable.setWidth("420px");
+						if (uiReportList.size() < 15) {
+							reportTable.setWidth("420px");
+						} else {
+							reportTable.setWidth("440px");
+						}
 						reportTable.setVisibleColumns(new String[]{"brandName", "totalAmount", "totalBuyPrice", "totalSellPrice"});
 						reportTable.setColumnHeaders(new String[]{"MARKA", "MİKTAR", "ALIŞ", "SATIŞ"});
 						reportTable.setColumnFooter("brandName", "TOPLAM");

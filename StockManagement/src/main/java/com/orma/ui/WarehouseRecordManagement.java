@@ -310,6 +310,12 @@ public class WarehouseRecordManagement extends GridLayout {
 				} else {
 					// TODO : throw exception
 				}
+				
+				if (recordContainer.size() < 15) {
+					recordTable.setWidth("672px");
+				} else {
+					recordTable.setWidth("690px");
+				}
 				recordTable.setColumnFooter("amount", ptInfo.getTotalAmount() + "");
 				recordTable.setColumnFooter("billNumber", "ALIŞ " + df.format(ptInfo.getTotalBuy()));
 				recordTable.setColumnFooter("deploymentDate", "SATIŞ " + df.format(ptInfo.getTotalSell()));
@@ -407,8 +413,19 @@ public class WarehouseRecordManagement extends GridLayout {
 							.getWarehouseRecordsByWarehouseAndProduct(
 									(Warehouse) warehouseSelect.getValue(),
 									(Product) productSelect.getValue());
+				} else if (barcodeSelect.getValue() != null 
+						&& warehouseSelect.getValue() != null) {
+					uiRecordList = definitionAPI
+							.getWarehouseRecordsByWarehouseAndProduct(
+									(Warehouse) warehouseSelect.getValue(),
+									(Product) barcodeSelect.getValue());
 				} else {
 					// TODO : throw exception
+				}
+				if (uiRecordList.size() < 15) {
+					recordTable.setWidth("672px");
+				} else {
+					recordTable.setWidth("690px");
 				}
 				recordContainer = new BeanItemContainer<WarehouseRecord>(WarehouseRecord.class, uiRecordList);
 				recordTable.setContainerDataSource(recordContainer);
@@ -487,6 +504,7 @@ public class WarehouseRecordManagement extends GridLayout {
 				ekleSayisi.setEnabled(false);
 				guncelle.setEnabled(true);
 				controlLayout.setEnabled(true);
+				recordTable.setEditable(false);
 				
 				if (productSelect.getValue() != null 
 						&& warehouseSelect.getValue() != null) {
@@ -498,6 +516,12 @@ public class WarehouseRecordManagement extends GridLayout {
 							  															  (Product) barcodeSelect.getValue());
 				} else {
 					// TODO : throw exception
+				}
+				
+				if (uiRecordList.size() < 15) {
+					recordTable.setWidth("672px");
+				} else {
+					recordTable.setWidth("690px");
 				}
 				recordTable.setLocale(new Locale("tr"));
 				recordTable.setTableFieldFactory(new TableFieldFactory() {

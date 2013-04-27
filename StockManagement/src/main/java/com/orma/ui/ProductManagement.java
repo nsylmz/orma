@@ -234,12 +234,18 @@ public class ProductManagement extends GridLayout {
 //						}
 					}
 				}
-				productTable.setWidth("850px");
 				if (brandSelect.getValue() != null) {
 					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
 				} else {
 					// TODO : throw exception
 				}
+				
+				if (uiProductList.size() < 15) {
+					productTable.setWidth("850px");
+				} else {
+					productTable.setWidth("875px");
+				}
+				
 				productContainer = new BeanItemContainer<Product>(Product.class, uiProductList);
 				productTable.setContainerDataSource(productContainer);
 				productTable.setEditable(false);
@@ -288,6 +294,12 @@ public class ProductManagement extends GridLayout {
 				} else {
 					// TODO : throw exception
 				}
+				
+				if (uiProductList.size() < 15) {
+					productTable.setWidth("848px");
+				} else {
+					productTable.setWidth("875px");
+				}
 				productContainer = new BeanItemContainer<Product>(Product.class, uiProductList);
 				productTable.setContainerDataSource(productContainer);
 				productTable.setEditable(false);
@@ -308,6 +320,7 @@ public class ProductManagement extends GridLayout {
 				guncelle.setEnabled(true);
 				controlLayout.setEnabled(true);
 				productTable.setEnabled(true);
+				productTable.setEditable(false);
 				
 				if (brandSelect.getValue() != null) {
 					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
@@ -356,6 +369,13 @@ public class ProductManagement extends GridLayout {
 		        });
 				productContainer.removeAllItems();
 				productContainer.addAll(uiProductList);
+				
+				if (uiProductList.size() < 15) {
+					productTable.setWidth("848px");
+				} else {
+					productTable.setWidth("875px");
+				}
+				
 				productTable.setVisibleColumns(new String[]{"barcode", "name", "buyPrice", "sellPrice", "transactionTime"});
 				productTable.setColumnHeaders(new String[]{"BARKOD", "İSİM", "ALIŞ FİYATI", "SATIŞ FİYATI", "TANIMLANMA ZAMANI"});
 				productTable.refreshRowCache();

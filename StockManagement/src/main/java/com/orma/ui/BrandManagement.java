@@ -68,12 +68,17 @@ public class BrandManagement extends GridLayout {
 		    }
 		};
 		brandTable.setImmediate(true);
-		brandTable.setHeight("400px");
-		brandTable.setWidth("350px");
 
 		uiBrandList = definitionAPI.getAllBrands();
 		brandContainer = new BeanItemContainer<Brand>(Brand.class, uiBrandList);
 		brandTable.setContainerDataSource(brandContainer);
+		
+		brandTable.setHeight("400px");
+		if (uiBrandList.size() < 15) {
+			brandTable.setWidth("350px");
+		} else {
+			brandTable.setWidth("375px");
+		}
 //		brandTable.addGeneratedColumn("Seç", new Table.ColumnGenerator() {
 //			CheckBox selected = null;
 //            public Component generateCell(Table source, Object itemId,
@@ -180,6 +185,12 @@ public class BrandManagement extends GridLayout {
 						brandContainer.addItem(emptyBrand);
 					}
 				}
+				
+				if (brandContainer.size() < 15) {
+					brandTable.setWidth("350px");
+				} else {
+					brandTable.setWidth("375px");
+				}
 				brandTable.refreshRowCache();
 		    }
 		});
@@ -212,11 +223,17 @@ public class BrandManagement extends GridLayout {
 						}
 					}
 				}
-				brandTable.setWidth("370px");
 				baseBrandList = definitionAPI.getAllBrands();
 				uiBrandList = (List<Brand>)((ArrayList<Brand>)baseBrandList).clone();
 				brandContainer = new BeanItemContainer<Brand>(Brand.class, uiBrandList);
 				brandTable.setContainerDataSource(brandContainer);
+				
+				if (uiBrandList.size() < 15) {
+					brandTable.setWidth("350px");
+				} else {
+					brandTable.setWidth("375px");
+				}
+				
 				brandTable.setEditable(false);
 				brandTable.setVisibleColumns(new String[]{"name", "transactionTime"});
 				brandTable.setColumnHeaders(new String[]{"İSİM", "TANIMLANMA ZAMANI"});
@@ -260,6 +277,11 @@ public class BrandManagement extends GridLayout {
 				uiBrandList = (List<Brand>)((ArrayList<Brand>)baseBrandList).clone();
 				brandContainer = new BeanItemContainer<Brand>(Brand.class, uiBrandList);
 				brandTable.setContainerDataSource(brandContainer);
+				if (uiBrandList.size() < 15) {
+					brandTable.setWidth("350px");
+				} else {
+					brandTable.setWidth("375px");
+				}
 				brandTable.setEditable(false);
 				brandTable.setVisibleColumns(new String[]{"name", "transactionTime"});
 				brandTable.setColumnHeaders(new String[]{"İSİM", "TANIMLANMA ZAMANI"});
