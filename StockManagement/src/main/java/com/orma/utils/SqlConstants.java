@@ -2,8 +2,7 @@ package com.orma.utils;
 
 public class SqlConstants {
 	// Sayim
-	public static String reportSayim =  "select w.name as wName, "										+
-										 "	    b.name as bName, "										+
+	public static String reportSayim =  "select b.name as bName, "										+
 										 "	    p.name as pName, "										+
 										 "	    p.barcode as pBarcode, "								+
 										 "	    p.BUY_PRICE as pBuyPrice, "								+
@@ -28,7 +27,7 @@ public class SqlConstants {
 										 "	where wr.product_id = p.id "								+
 										 "	  and wr.warehouse_id = w.id "								+
 										 "	  and p.brand_id = b.id "									+
-										 "	group by wName, bName, pName, pBarcode, pBuyPrice, pSellPrice";
+										 "	group by bName, pName, pBarcode, pBuyPrice, pSellPrice";
 	
 	// Spesifik sorgulama
 	public static String reportGeneral = "select w.name as wName, "										+

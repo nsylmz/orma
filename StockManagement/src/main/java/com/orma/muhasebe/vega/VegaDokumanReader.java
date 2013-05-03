@@ -146,7 +146,7 @@ public class VegaDokumanReader {
 				}
 			}
 		} catch (Exception e) {
-			log.info(e.getMessage());
+			log.info(e.getMessage() + " Row Number "+ (row.getRowNum()+1));
 			throw new StockManagementException(e);
 		} finally {
 			log.debug(stream.toXML(dokuman));
