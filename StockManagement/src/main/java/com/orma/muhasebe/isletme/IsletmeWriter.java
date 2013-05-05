@@ -1,6 +1,7 @@
 package com.orma.muhasebe.isletme;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -9,7 +10,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,7 +21,7 @@ import com.orma.muhasebe.domain.isletme.IsletmeSayfa;
 
 public class IsletmeWriter {
 	
-	private static Logger log = Logger.getLogger(IsletmeWriter.class);
+//	private static Logger log = Logger.getLogger(IsletmeWriter.class);
 	
 	public static String[] months = {"OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"};
 
@@ -41,7 +41,9 @@ public class IsletmeWriter {
 			InputStream inp = new FileInputStream(baseFilePath);
 			Workbook wb = WorkbookFactory.create(inp);
 			Sheet sheet = wb.getSheet(sheetName);
-			
+			if (sheet == null) {
+				throw new StockManagementException("4", baseFilePath + " dosyasındaki " + sheetName + " adlı sayfa bulunamıyor!!!");
+			}
 			row = sheet.getRow(rowNum);
 			cell = row.getCell(0);
 			cell.setCellValue(month + " " + year + " " + kantinType + " AİT İŞLETME DEFTERİ");
@@ -143,9 +145,18 @@ public class IsletmeWriter {
 			cell = row.getCell(0);
 			cell.setCellValue("2'nci ORDU KH.DES.GRP. KOMUTANLIĞI " + kantinType + " KANTİNİNİN " + month + " " + year + " AYI HESAP ÖZETİ");
 			List<String> monthList =  Arrays.asList(months);
-			//TODO ocak aralik kontrol
-			String previousMonth = monthList.get(monthList.indexOf(month)-1);
-			String nextMonth = monthList.get(monthList.indexOf(month)+1);
+			String nextMonth = "";
+			String previousMonth = "";
+			if (monthList.indexOf(month) == 11) { // ARALIK AYI
+				nextMonth = monthList.get(0);
+			} else {
+				nextMonth = monthList.get(monthList.indexOf(month)+1);
+			}
+			if (monthList.indexOf(month) == 0) { // OCAK AYI
+				previousMonth = monthList.get(1);
+			} else {
+				previousMonth = monthList.get(monthList.indexOf(month)-1);
+			}
 			rowNum = rowNum + 3;
 			
 			row = sheet.getRow(rowNum);
@@ -171,11 +182,12 @@ public class IsletmeWriter {
 			FileOutputStream fileOut = new FileOutputStream(outputFilePath);
 			wb.write(fileOut);
 			fileOut.close();
+		} catch (FileNotFoundException e) {
+			throw new StockManagementException("3", baseFilePath + " belirtilen dosya bulunamıyor!!!", e.getCause());
+		} catch (StockManagementException e) {
+			throw new StockManagementException(e.getCode(), e.getMessage(), e.getCause());
 		} catch (Exception e) {
-			log.info(e.getMessage());
 			throw new StockManagementException(e);
-		} finally {
-	
 		}
 	}
 	

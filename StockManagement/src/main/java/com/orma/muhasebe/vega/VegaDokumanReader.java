@@ -2,6 +2,7 @@ package com.orma.muhasebe.vega;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,6 +53,10 @@ public class VegaDokumanReader {
 				sheet = workbook.getSheetAt(0);
 			}
 			
+			if (sheet == null) {
+				throw new StockManagementException("1", "");
+			}
+			
 			int siraNo = 1;
 			Iterator<Row> rowIterator = sheet.iterator();
 			while (rowIterator.hasNext()) {
@@ -99,7 +104,7 @@ public class VegaDokumanReader {
 						row = (Row) rowIterator.next();
 						fatura.setTarih(row.getCell(1).getDateCellValue());
 						if (row.getCell(2).getCellType() == Cell.CELL_TYPE_NUMERIC) {
-							fatura.setEvrakNo(BigDecimal.valueOf(row.getCell(2).getNumericCellValue()).unscaledValue().toString());
+							fatura.setEvrakNo(BigDecimal.valueOf(row.getCell(2).getNumericCellValue()).longValue() + "");
 						} else if (row.getCell(2).getCellType() == Cell.CELL_TYPE_STRING) {
 							fatura.setEvrakNo(row.getCell(2).getStringCellValue().trim());
 						}
@@ -145,9 +150,13 @@ public class VegaDokumanReader {
 					}
 				}
 			}
+		} catch (FileNotFoundException e) {
+			throw new StockManagementException("3", filePath + " belirtilen dosya bulunamıyor!!!", e.getCause());
+		} catch (StockManagementException e) {
+			throw new StockManagementException(e.getCode(), e.getMessage(), e.getCause());
 		} catch (Exception e) {
-			log.info(e.getMessage() + " Row Number "+ (row.getRowNum()+1));
-			throw new StockManagementException(e);
+			log.error(e.getMessage() + " Row Number "+ (row.getRowNum()+1));
+			throw new StockManagementException(e.getMessage() + " Row Number "+ (row.getRowNum()+1), e.getCause());
 		} finally {
 			log.debug(stream.toXML(dokuman));
 		}

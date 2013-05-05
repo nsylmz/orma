@@ -136,8 +136,8 @@ public class DepoSayimWriter {
 			workBook.write(out);
 			out.close();
 		} catch (Exception e) {
-			log.info(e.getMessage());
-			log.info(e.getStackTrace().toString());
+			log.error(e.getMessage());
+			log.error(e.getStackTrace().toString());
 			throw new StockManagementException(e);
 		} finally {
 

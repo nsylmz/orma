@@ -2,8 +2,6 @@ package com.orma.ui;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
-
 import com.orma.exception.StockManagementException;
 import com.orma.muhasebe.domain.sayim.SayimDokuman;
 import com.orma.muhasebe.sayim.SayimReader;
@@ -22,7 +20,7 @@ import com.vaadin.ui.Window.Notification;
 @SuppressWarnings("serial")
 public class SayimTartiManagement extends GridLayout implements Button.ClickListener {
 	
-	private static Logger log = Logger.getLogger(SayimTartiManagement.class);
+//	private static Logger log = Logger.getLogger(SayimTartiManagement.class);
 	
 	private final String textFieldSize = "200px";
 	private final String labelSize = "250px";
@@ -30,18 +28,16 @@ public class SayimTartiManagement extends GridLayout implements Button.ClickList
 	Label vegaKlasor = new Label("C:\\Muhasebe\\Vega\\");
 	TextField vegaFileName = new TextField("Vega Dosya İsmi");
 	TextField vegaSheetName = new TextField("Vege Excelindeki Sayfa İsmi");
-	Label sablonKlasor = new Label("C:\\Muhasebe\\sablon\\");
-	TextField sablonFileName = new TextField("Şablon Dosya İsmi");
+	String sablonFile = "C:\\Muhasebe\\sablon\\62 Sayfa Sayım Tartı Sablon.xlsx";
 	Label sayimKlasor = new Label("C:\\Muhasebe\\Sayım Tartı\\");
 	TextField sayimFileName = new TextField("Sayim Dosya İsmi");
-//	TextField sayimSheetName = new TextField("Sayım Excelindeki Sayfa İsmi");
 	Select months = new Select("Sayım Tartı Ayı");
 	TextField year = new TextField("Sayım Tartı Yılı");
-	TextField templatePageNumber = new TextField("Şablon Toplam Sayfa Sayısı");
+	int templatePageNumber = 62;
 	
 	public SayimTartiManagement() {
 		setSpacing(true);
-		setHeight("250");
+		setHeight("210");
 		
 		setColumns(4);
 		setRows(6);
@@ -57,13 +53,6 @@ public class SayimTartiManagement extends GridLayout implements Button.ClickList
 		addComponent(vegaFileName, 1, 0);
 		addComponent(vegaSheetName, 2, 0);
 		
-		sablonKlasor.setWidth(labelSize);
-		sablonFileName.setWidth(textFieldSize);
-		sablonFileName.setInputPrompt("Örn: sablon.xlsx");
-		sablonFileName.setRequired(true);
-		addComponent(sablonKlasor, 0, 1);
-		setComponentAlignment(sablonKlasor, Alignment.BOTTOM_RIGHT);
-		addComponent(sablonFileName, 1, 1);
 		
 		sayimKlasor.setWidth(labelSize);
 		sayimFileName.setWidth(textFieldSize);
@@ -81,12 +70,8 @@ public class SayimTartiManagement extends GridLayout implements Button.ClickList
 		
 		year.setRequired(true);
 		
-		templatePageNumber.setWidth(textFieldSize);
-		templatePageNumber.setRequired(true);
-		
 		addComponent(months, 0, 3);
 		addComponent(year, 1, 3);
-		addComponent(templatePageNumber, 2, 3);
 		
 		Button submit = new Button("Oluştur", this);
 		
@@ -95,38 +80,70 @@ public class SayimTartiManagement extends GridLayout implements Button.ClickList
 
 	@Override
 	public void buttonClick(ClickEvent event) {
+		Notification warnN = null;
 		try {
 			vegaFileName.validate();
- 			sablonFileName.validate();
 			sayimFileName.validate();
 			months.validate();
 			year.validate();
-			templatePageNumber.validate();
 			
-			SayimDokuman sayimDokuman = SayimReader.readSayim(vegaKlasor.getValue().toString().trim()  + vegaFileName.getValue().toString().trim(), 
+			SayimDokuman sayimDokuman = SayimReader.readSayim(vegaKlasor.getValue().toString().trim() 
+															+ vegaFileName.getValue().toString().trim() + ".xls", 
 															  vegaSheetName.getValue().toString().trim());
 			
-			SayimWriter.writeSayimFile(sablonKlasor.getValue().toString().trim() + sablonFileName.getValue().toString().trim(), 
-									   sayimKlasor.getValue().toString().trim() + sayimFileName.getValue().toString().trim(), 
-									   "MARKET", Integer.parseInt(templatePageNumber.getValue().toString().trim()), 
+			SayimWriter.writeSayimFile(sablonFile, 
+									   sayimKlasor.getValue().toString().trim() + sayimFileName.getValue().toString().trim() + ".xlsx", 
+									   "MARKET", templatePageNumber, 
 									   sayimDokuman, months.getValue().toString(), 
 									   Integer.parseInt(year.getValue().toString().trim()));
 			
 			Notification transactionComplate = new Notification("SAYIM TARTI OLUŞTURULMUŞTUR. DOSYAYI KONTROL EDİNİZ. " 
 										+ sayimKlasor.getValue().toString().trim() + sayimFileName.getValue().toString().trim(), 
 										Notification.TYPE_HUMANIZED_MESSAGE);
-			transactionComplate.setDelayMsec(100);
+			transactionComplate.setDelayMsec(-1);
 			getWindow().showNotification(transactionComplate);
 			
 		} catch (EmptyValueException e) {
-			getWindow().showNotification("Zorunlu Alanları Doldurup Tekrar Deniyeniz!!!", Notification.TYPE_WARNING_MESSAGE);
+			warnN = new Notification("Zorunlu Alanları Doldurup Tekrar Deniyeniz!!!", Notification.TYPE_WARNING_MESSAGE);
+			warnN.setDelayMsec(-1);
+			getWindow().showNotification(warnN);
 		} catch (StockManagementException e) {
 			if (e.getMessage().contains("OutOfMemoryError")) {
-				getWindow().showNotification("Bilgisayar hafızası yetersiz!!! Bilgisayarı yeniden başlatıp tekrar deneyiniz.");
+				getWindow().showNotification("Bilgisayar hafızası yetersiz!!! Bilgisayarı yeniden başlatıp tekrar deneyiniz.", 
+										  Notification.TYPE_ERROR_MESSAGE);
+			} else if (e.getCode() != null 
+					&& e.getCode().equals("1")) {
+				if (vegaSheetName.getValue() != null) {
+					getWindow().showNotification(vegaKlasor.getValue().toString().trim() 
+							  				   + vegaFileName.getValue().toString().trim() + ".xls" 
+							  				   + " dosyasındaki " + vegaSheetName.getValue().toString().trim() + " sayfası bulunamıyor!!!"
+							  				   , Notification.TYPE_ERROR_MESSAGE);
+				} else {
+					getWindow().showNotification(vegaKlasor.getValue().toString().trim() 
+			  				   + vegaFileName.getValue().toString().trim() + ".xls" 
+			  				   + " dosyasında okunacak sayfa bulunamıyor. Lütfen Dosyayı kontrol ediniz!!!"
+			  				   , Notification.TYPE_ERROR_MESSAGE);
+				}
+			} else if (e.getCode() != null 
+					&& e.getCode().equals("2")) {
+				getWindow().showNotification(e.getMessage()
+						  				   , Notification.TYPE_ERROR_MESSAGE);
+			} else if (e.getCode() != null 
+					&& e.getCode().equals("3")) {
+				getWindow().showNotification(e.getMessage()
+						  				   , Notification.TYPE_ERROR_MESSAGE);
+			} else if (e.getCode() != null 
+					&& e.getCode().equals("4")) {
+				getWindow().showNotification(e.getMessage()
+						  				   , Notification.TYPE_ERROR_MESSAGE);
+			} else if (e.getMessage() != null 
+					&& e.getMessage().contains("Row Number")) {
+				getWindow().showNotification(vegaKlasor.getValue().toString().trim() 
+						  				   + vegaFileName.getValue().toString().trim() + ".xls" 
+						  				   + " dosyasındaki " + e.getMessage().substring(e.getMessage().lastIndexOf("Row Number") + 11)
+						  				   + " nolu satırda hata var. Lütfen kontrol ediniz!!!"
+						  				   , Notification.TYPE_ERROR_MESSAGE);
 			}
-			log.debug(e);
-		} finally {
-			
 		}
 	}
 

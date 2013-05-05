@@ -1,10 +1,10 @@
 package com.orma.muhasebe.sayim;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -15,22 +15,10 @@ import com.orma.exception.StockManagementException;
 import com.orma.muhasebe.domain.sayim.SayimDokuman;
 import com.orma.muhasebe.domain.sayim.SayimSatir;
 import com.orma.muhasebe.domain.sayim.SayimSayfa;
-import com.thoughtworks.xstream.XStream;
 
 public class SayimWriter {
 	
-	private static Logger log = Logger.getLogger(SayimReader.class);
-	
-	private static XStream stream = new XStream();
-	
-	public static void main(String[] args) throws Exception {
-		SayimDokuman dokuman = SayimReader.readSayim("D:\\Enes\\Springsource\\test data\\input\\SAYIM0213.xls", null);
-		
-		writeSayimFile("D:\\Enes\\Springsource\\test data\\sablon\\62 Sayfa Sayım Tartı Sablon.xlsx", 
-				"D:\\Enes\\Springsource\\test data\\output\\ŞUBAT SAYIM 2013.xlsx", 
-				"MARKET", 62, dokuman, "ŞUBAT", 2013);
-	}
-	
+//	private static Logger log = Logger.getLogger(SayimReader.class);
 	
 	public static void writeSayimFile(String baseFilePath,
 			String outputFilePath, String sheetName, int templatePageNumber,
@@ -48,7 +36,9 @@ public class SayimWriter {
 			InputStream inp = new FileInputStream(baseFilePath);
 			Workbook wb = WorkbookFactory.create(inp);
 			Sheet sheet = wb.getSheet(sheetName);
-			
+			if (sheet == null) {
+				throw new StockManagementException("4", baseFilePath + " dosyasındaki " + sheetName + " adlı sayfa bulunamıyor!!!");
+			}
 			row = sheet.getRow(rowNum);
 			cell = row.getCell(0);
 			cell.setCellValue(month + " " + year + " MARKET ŞUBESİNE AİT SAYIM LİSTESİ");
@@ -115,21 +105,16 @@ public class SayimWriter {
 					row.getCell(7).setCellValue(sayimSayfa.getKumulatifKarToplam().doubleValue());
 					rowNum++;
 				}
-				
-//				if (i != templatePageNumber-sayimDokuman.getSayfaList().size()-2) {
-//					rowNum = rowNum + 50;
-//				} else {
-//					rowNum = rowNum + 43;
-//				}
 			}
 			FileOutputStream fileOut = new FileOutputStream(outputFilePath);
 			wb.write(fileOut);
 			fileOut.close();
+		}  catch (FileNotFoundException e) {
+			throw new StockManagementException("3", baseFilePath + " belirtilen dosya bulunamıyor!!!", e.getCause());
+		} catch (StockManagementException e) {
+			throw new StockManagementException(e.getCode(), e.getMessage(), e.getCause());
 		} catch (Exception e) {
-			log.info(e.getMessage());
 			throw new StockManagementException(e);
-		} finally {
-			log.debug(stream.toXML(sayimDokuman));
 		}
 		
 	}

@@ -2,6 +2,7 @@ package com.orma.muhasebe.sayim;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,13 +17,10 @@ import com.orma.exception.StockManagementException;
 import com.orma.muhasebe.domain.sayim.SayimDokuman;
 import com.orma.muhasebe.domain.sayim.SayimSatir;
 import com.orma.muhasebe.domain.sayim.SayimSayfa;
-import com.thoughtworks.xstream.XStream;
 
 public class SayimReader {
 	
 	private static Logger log = Logger.getLogger(SayimReader.class);
-	
-	private static XStream stream = new XStream();
 	
 	public static SayimDokuman readSayim(String filePath, String sheetName)  throws StockManagementException {
 		
@@ -57,6 +55,10 @@ public class SayimReader {
 				sheet = workbook.getSheetAt(0);
 			}
 			
+			if (sheet == null) {
+				throw new StockManagementException("1", "");
+			}
+			
 			Iterator<Row> rowIterator = sheet.iterator();
 			while (rowIterator.hasNext()) { 
 				row = (Row) rowIterator.next();
@@ -74,7 +76,8 @@ public class SayimReader {
 						sayfaNo++;
 					}
 				} else if (dokumanBasladi) {
-					dokumanBitti = checkFaturaSeperator(row);
+//					dokumanBitti = checkFaturaSeperator(row);
+					dokumanBitti = checkDokumanSeperator(row);
 					if (dokumanBitti) {
 						if (satirCounter < 50) {
 							kumulatifAlisToplam = kumulatifAlisToplam.add(sayfaAlisToplam);
@@ -87,12 +90,12 @@ public class SayimReader {
 							sayfa.setSayfaKarToplam(sayfaSatisToplam.subtract(sayfaAlisToplam));
 							sayimSayfaList.add(sayfa);
 						}
+//						row = (Row) rowIterator.next();
+//						row = (Row) rowIterator.next();
 						row = (Row) rowIterator.next();
-						row = (Row) rowIterator.next();
-						row = (Row) rowIterator.next();
-						if (BigDecimal.valueOf(row.getCell(6).getNumericCellValue()).compareTo(kumulatifAlisToplam) != 0) {
+						if (BigDecimal.valueOf(row.getCell(5).getNumericCellValue()).compareTo(kumulatifAlisToplam) != 0) {
 							// TODO: throw exception
-						} else if (BigDecimal.valueOf(row.getCell(8).getNumericCellValue()).compareTo(kumulatifSatisToplam) != 0) {
+						} else if (BigDecimal.valueOf(row.getCell(7).getNumericCellValue()).compareTo(kumulatifSatisToplam) != 0) {
 							// TODO: throw exception
 						}
 						sayimDokuman.setKumulatifAlisToplam(kumulatifAlisToplam);
@@ -122,13 +125,13 @@ public class SayimReader {
 							satirCounter = 1;
 						}
 						satir = new SayimSatir();
-						satir.setUrunAdi(row.getCell(2).getStringCellValue());
-						satir.setMiktar(BigDecimal.valueOf(row.getCell(3).getNumericCellValue()));
-						satir.setBirimAlisFiyati(BigDecimal.valueOf(row.getCell(4).getNumericCellValue()));
-						satir.setToplamAlisTutari(BigDecimal.valueOf(row.getCell(5).getNumericCellValue()));
-						satir.setBirimSatisFiyati(BigDecimal.valueOf(row.getCell(6).getNumericCellValue()));
-						satir.setToplamSatisTutari(BigDecimal.valueOf(row.getCell(7).getNumericCellValue()));
-						satir.setKar(BigDecimal.valueOf(row.getCell(8).getNumericCellValue()));
+						satir.setUrunAdi(row.getCell(1).getStringCellValue());
+						satir.setMiktar(BigDecimal.valueOf(row.getCell(2).getNumericCellValue()));
+						satir.setBirimAlisFiyati(BigDecimal.valueOf(row.getCell(3).getNumericCellValue()));
+						satir.setToplamAlisTutari(BigDecimal.valueOf(row.getCell(4).getNumericCellValue()));
+						satir.setBirimSatisFiyati(BigDecimal.valueOf(row.getCell(5).getNumericCellValue()));
+						satir.setToplamSatisTutari(BigDecimal.valueOf(row.getCell(6).getNumericCellValue()));
+						satir.setKar(BigDecimal.valueOf(row.getCell(7).getNumericCellValue()));
 						sayimSatirList.add(satir);
 						satirCounter++;
 						
@@ -137,15 +140,18 @@ public class SayimReader {
 					}
 				}
 			}
+		} catch (FileNotFoundException e) {
+			throw new StockManagementException("3", filePath + " belirtilen dosya bulunamıyor!!!", e.getCause());
+		} catch (StockManagementException e) {
+			throw new StockManagementException(e.getCode(), e.getMessage(), e.getCause());
 		} catch (Exception e) {
-			log.info(e.getMessage());
-			throw new StockManagementException(e);
-		} finally {
-			log.debug(stream.toXML(sayimDokuman));
+			log.error(e.getMessage() + " Row Number "+ (row.getRowNum()+1));
+			throw new StockManagementException(e.getMessage() + " Row Number "+ (row.getRowNum()+1), e.getCause());
 		}
 		return sayimDokuman;
 	}
 	
+	@SuppressWarnings("unused")
 	private static boolean checkFaturaSeperator(Row row) {
 		Cell cell = row.getCell(0);
 		if (cell != null && cell.getCellType() == 1) {

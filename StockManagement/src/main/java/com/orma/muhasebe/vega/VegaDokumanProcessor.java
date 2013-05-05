@@ -2,14 +2,12 @@ package com.orma.muhasebe.vega;
 
 import java.math.BigDecimal;
 
-import org.apache.log4j.Logger;
-
 import com.orma.exception.StockManagementException;
 import com.orma.muhasebe.domain.vega.Fatura;
 
 public class VegaDokumanProcessor {
 	
-	private static Logger log = Logger.getLogger(VegaDokumanProcessor.class);
+//	private static Logger log = Logger.getLogger(VegaDokumanProcessor.class);
 	
 	public static void faturaCheckAndFix(Fatura fatura) throws StockManagementException {
 	
@@ -30,7 +28,7 @@ public class VegaDokumanProcessor {
 				if (fatura.getToplamAlisTutari().compareTo(toplamAlis) == 1) {
 					fark = fatura.getToplamAlisTutari().subtract(toplamAlis);
 					if (fark.compareTo(BigDecimal.ONE) != -1) {
-						throw new StockManagementException("MARKET vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
+						throw new StockManagementException("2", "Vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
 					}
 					loopCount = fark.multiply(BigDecimal.valueOf(100)).intValue() / fatura.getUrunListesi().size();
 					for (int i = 0; i < (loopCount+1)*fark.multiply(BigDecimal.valueOf(100)).intValue(); i++) {
@@ -39,7 +37,7 @@ public class VegaDokumanProcessor {
 				} else {
 					fark = toplamAlis.subtract(fatura.getToplamAlisTutari());
 					if (fark.compareTo(BigDecimal.ONE) != -1) {
-						throw new StockManagementException("MARKET vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
+						throw new StockManagementException("2", "Vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
 					}
 					loopCount = fark.multiply(BigDecimal.valueOf(100)).intValue() / fatura.getUrunListesi().size();
 					for (int i = 0; i < (loopCount+1)*fark.multiply(BigDecimal.valueOf(100)).intValue(); i++) {
@@ -52,7 +50,7 @@ public class VegaDokumanProcessor {
 				if (fatura.getToplamSatisTutari().compareTo(toplamSatis) == 1) {
 					fark = fatura.getToplamSatisTutari().subtract(toplamSatis);
 					if (fark.compareTo(BigDecimal.ONE) != -1) {
-						throw new StockManagementException("MARKET vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
+						throw new StockManagementException("2", "Vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
 					}
 					loopCount = fark.multiply(BigDecimal.valueOf(100)).intValue() / fatura.getUrunListesi().size();
 					for (int i = 0; i < (loopCount+1)*fark.multiply(BigDecimal.valueOf(100)).intValue(); i++) {
@@ -61,7 +59,7 @@ public class VegaDokumanProcessor {
 				} else {
 					fark = toplamSatis.subtract(fatura.getToplamSatisTutari());
 					if (fark.compareTo(BigDecimal.ONE) != -1) {
-						throw new StockManagementException("MARKET vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
+						throw new StockManagementException("2", "Vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
 					}
 					loopCount = fark.multiply(BigDecimal.valueOf(100)).intValue() / fatura.getUrunListesi().size();
 					for (int i = 0; i < (loopCount+1)*fark.multiply(BigDecimal.valueOf(100)).intValue(); i++) {
@@ -74,7 +72,7 @@ public class VegaDokumanProcessor {
 				if (fatura.getToplamKar().compareTo(toplamKar) == 1) {
 					fark = fatura.getToplamKar().subtract(toplamKar);
 					if (fark.compareTo(BigDecimal.ONE) != -1) {
-						throw new StockManagementException("MARKET vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
+						throw new StockManagementException("2", "Vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
 					}
 					loopCount = fark.multiply(BigDecimal.valueOf(100)).intValue() / fatura.getUrunListesi().size();
 					for (int i = 0; i < (loopCount+1)*fark.multiply(BigDecimal.valueOf(100)).intValue(); i++) {
@@ -83,7 +81,7 @@ public class VegaDokumanProcessor {
 				} else {
 					fark = toplamKar.subtract(fatura.getToplamKar());
 					if (fark.compareTo(BigDecimal.ONE) != -1) {
-						throw new StockManagementException("MARKET vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
+						throw new StockManagementException("2", "Vega dosyası elle düzeltilmiş. Hatalı olan fatura " + fatura.getEvrakNo());
 					}
 					loopCount = fark.multiply(BigDecimal.valueOf(100)).intValue() / fatura.getUrunListesi().size();
 					for (int i = 0; i < (loopCount+1)*fark.multiply(BigDecimal.valueOf(100)).intValue(); i++) {
@@ -91,11 +89,10 @@ public class VegaDokumanProcessor {
 					}
 				}
 			}
+		} catch (StockManagementException e) {
+			throw new StockManagementException(e.getCode(), e.getMessage(), e.getCause());
 		} catch (Exception e) {
-			log.info(e.getMessage());
 			throw new StockManagementException(e);
-		} finally {
-
 		}
 	}
 	
