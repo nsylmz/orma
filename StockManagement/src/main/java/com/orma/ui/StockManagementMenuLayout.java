@@ -34,7 +34,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.addItem("Sayım Tartı");
 		
 		menuTree.addItem("Ürün Yönetimi");
-//		menuTree.addItem("Firma Yönetimi");
+		menuTree.addItem("Ürün Fiyat Güncellemesi");
 		menuTree.addItem("Marka Yönetimi");
 		menuTree.addItem("Depo Yönetimi");
 		menuTree.addItem("Depo Kayıt Yönetimi");
@@ -45,7 +45,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setParent("Sayım Tartı", "Muhasebe Destek Programı");
 
 		menuTree.setParent("Ürün Yönetimi", "Depo Stok Yönetim Programı");
-//		menuTree.setParent("Firma Yönetimi", "Depo Stok Yönetim Programı");
+		menuTree.setParent("Ürün Fiyat Güncellemesi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Marka Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Depo Yönetimi", "Depo Stok Yönetim Programı");
 		menuTree.setParent("Depo Kayıt Yönetimi", "Depo Stok Yönetim Programı");
@@ -55,7 +55,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setChildrenAllowed("İşletme Defteri", false);
 		menuTree.setChildrenAllowed("Sayım Tartı", false);
 		menuTree.setChildrenAllowed("Ürün Yönetimi", false);
-//		menuTree.setChildrenAllowed("Firma Yönetimi", false);
+		menuTree.setChildrenAllowed("Ürün Fiyat Güncellemesi", false);
 		menuTree.setChildrenAllowed("Marka Yönetimi", false);
 		menuTree.setChildrenAllowed("Depo Yönetimi", false);
 		menuTree.setChildrenAllowed("Depo Kayıt Yönetimi", false);
@@ -84,26 +84,10 @@ public class StockManagementMenuLayout extends GridLayout implements
 				}
 				mainPanel.setSecondComponent(appLayout);
 			} else if (event.getProperty().getValue().equals("Ürün Yönetimi")) {
-//				getWindow().showNotification("Selected item: " + event.getProperty().getValue());
-//				appLayout = layouts.get("ürün");
-//				if (appLayout == null) {
-//					appLayout = new ProductManagement(2, 2);
-//					layouts.put("ürün", appLayout);
-//				}
 				mainPanel.setSecondComponent(new ProductManagement(2, 3));
 			} else if (event.getProperty().getValue().equals("Depo Yönetimi")) {
-//				appLayout = layouts.get("warehouse");
-//				if (appLayout == null) {
-//					appLayout = new WarehouseManagement(2, 2);
-//					layouts.put("warehouse", appLayout);
-//				}
 				mainPanel.setSecondComponent(new WarehouseManagement(2, 2));
 			} else if (event.getProperty().getValue().equals("Depo Kayıt Yönetimi")) {
-//				appLayout = layouts.get("warehouseRecord");
-//				if (appLayout == null) {
-//					appLayout = new WarehouseRecordManagement(2, 2);
-//					layouts.put("warehouseRecord", appLayout);
-//				}
 				mainPanel.setSecondComponent(new WarehouseRecordManagement(2, 3));
 //			} else if (event.getProperty().getValue().equals("Firma Yönetimi")) {
 //				appLayout = layouts.get("company");
@@ -113,16 +97,13 @@ public class StockManagementMenuLayout extends GridLayout implements
 //				}
 //				mainPanel.setSecondComponent(new CompanyManagement(2, 2));
 			} else if (event.getProperty().getValue().equals("Marka Yönetimi")) {
-//				appLayout = layouts.get("brand");
-//				if (appLayout == null) {
-//					appLayout = new BrandManagement(2, 2);
-//					layouts.put("brand", appLayout);
-//				}
 				mainPanel.setSecondComponent(new BrandManagement(2, 2));
 			} else if (event.getProperty().getValue().equals("Depo Stok Raporları")) {
 				mainPanel.setSecondComponent(new WarehouseStockReportsManagement(2, 2));
 			} else if (event.getProperty().getValue().equals("Depo Stok Sayım")) {
 				mainPanel.setSecondComponent(new WarehouseStockSayim());
+			} else if (event.getProperty().getValue().equals("Ürün Fiyat Güncellemesi")) {
+				mainPanel.setSecondComponent(new ProductPriceUpdate());
 			}
 		}
 	}

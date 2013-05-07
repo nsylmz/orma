@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Configurable;
 import com.orma.api.IDefinitionAPI;
 import com.orma.domain.Brand;
 import com.orma.domain.Product;
+import com.orma.exception.StockManagementException;
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
@@ -181,7 +183,9 @@ public class ProductManagement extends GridLayout {
 					if (brandSelect.getValue() != null) {
 						emptyProduct.setBrand((Brand) brandSelect.getValue());
 					} else {
-						// TODO : throw exception
+						Notification warn = new Notification("Lütfen Marka Seçiniz!!!", Notification.TYPE_ERROR_MESSAGE);
+						warn.setDelayMsec(-1);
+						getWindow().showNotification(warn);
 					}
 					productContainer.addItem(emptyProduct);
 				} else {
@@ -194,7 +198,9 @@ public class ProductManagement extends GridLayout {
 						if (brandSelect.getValue() != null) {
 							emptyProduct.setBrand((Brand) brandSelect.getValue());
 						} else {
-							// TODO : throw exception
+							Notification warn = new Notification("Lütfen Marka Seçiniz!!!", Notification.TYPE_ERROR_MESSAGE);
+							warn.setDelayMsec(-1);
+							getWindow().showNotification(warn);
 						}
 						productContainer.addItem(emptyProduct);
 					}
@@ -218,7 +224,9 @@ public class ProductManagement extends GridLayout {
 				if (brandSelect.getValue() != null) {
 					baseProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
 				} else {
-					// TODO : throw exception
+					Notification warn = new Notification("Lütfen Marka Seçiniz!!!", Notification.TYPE_ERROR_MESSAGE);
+					warn.setDelayMsec(-1);
+					getWindow().showNotification(warn);
 				}
 				for (Iterator i = productContainer.getItemIds().iterator(); i.hasNext();) {
 					product =  (Product) i.next();
@@ -226,18 +234,22 @@ public class ProductManagement extends GridLayout {
 							&& product.getName() != null
 							&& product.getName().length() > 0
 							&& !product.getName().equals("null")) {
-//						if (!OrmaUtils.listContains(baseProductList, (IBaseEntity)product)) {
-							product.setTransactionTime(new Date());
+						product.setTransactionTime(new Date());
+						try {
 							definitionAPI.saveProduct(product);
-//						} else {
-							// TODO throw exception
-//						}
+						} catch (StockManagementException e) {
+							if (e.getCode() != null && e.getCode().equals("6")) {
+								getWindow().showNotification(e.getMessage(), Notification.TYPE_ERROR_MESSAGE);
+							}
+						}
 					}
 				}
 				if (brandSelect.getValue() != null) {
 					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
 				} else {
-					// TODO : throw exception
+					Notification warn = new Notification("Lütfen Marka Seçiniz!!!", Notification.TYPE_ERROR_MESSAGE);
+					warn.setDelayMsec(-1);
+					getWindow().showNotification(warn);
 				}
 				
 				if (uiProductList.size() < 15) {
@@ -269,7 +281,9 @@ public class ProductManagement extends GridLayout {
 				if (brandSelect.getValue() != null) {
 					baseProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
 				} else {
-					// TODO : throw exception
+					Notification warn = new Notification("Lütfen Marka Seçiniz!!!", Notification.TYPE_ERROR_MESSAGE);
+					warn.setDelayMsec(-1);
+					getWindow().showNotification(warn);
 				}
 				for (Iterator i = productContainer.getItemIds().iterator(); i.hasNext();) {
 					product =  (Product) i.next();
@@ -292,7 +306,9 @@ public class ProductManagement extends GridLayout {
 				if (brandSelect.getValue() != null) {
 					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
 				} else {
-					// TODO : throw exception
+					Notification warn = new Notification("Lütfen Marka Seçiniz!!!", Notification.TYPE_ERROR_MESSAGE);
+					warn.setDelayMsec(-1);
+					getWindow().showNotification(warn);
 				}
 				
 				if (uiProductList.size() < 15) {
@@ -325,7 +341,9 @@ public class ProductManagement extends GridLayout {
 				if (brandSelect.getValue() != null) {
 					uiProductList = definitionAPI.getProductsByBrand((Brand) brandSelect.getValue());
 				} else {
-					// TODO : throw exception
+					Notification warn = new Notification("Lütfen Marka Seçiniz!!!", Notification.TYPE_ERROR_MESSAGE);
+					warn.setDelayMsec(-1);
+					getWindow().showNotification(warn);
 				}
 				productTable.setTableFieldFactory(new TableFieldFactory() {
 		            @Override

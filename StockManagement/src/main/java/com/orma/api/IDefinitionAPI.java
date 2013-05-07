@@ -6,6 +6,7 @@ import com.orma.domain.Brand;
 import com.orma.domain.Product;
 import com.orma.domain.Warehouse;
 import com.orma.domain.WarehouseRecord;
+import com.orma.exception.StockManagementException;
 
 public interface IDefinitionAPI {
 	
@@ -15,13 +16,15 @@ public interface IDefinitionAPI {
 	
 	public List<Brand> getAllBrands();
 	
-	public void saveProduct(Product product);
+	public void saveProduct(Product product) throws StockManagementException;
 	
 	public void deleteProduct(Product product);
 	
 	public List<Product> getAllProducts();
 	
 	public List<Product> getProductsByBrand(Brand brand);
+	
+	public Product getProductByBarcode(Long barcode) throws StockManagementException;
 	
 //	public void saveCompany(Company company);
 //	

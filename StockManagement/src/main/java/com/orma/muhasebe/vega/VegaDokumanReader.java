@@ -129,6 +129,13 @@ public class VegaDokumanReader {
 					} else {
 						urun = new Urun();
 						if (!processed) {
+							if (row.getCell(3) == null) {
+								urun.setBarKodu("");
+							} else if (row.getCell(3).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+								urun.setBarKodu(BigDecimal.valueOf(row.getCell(3).getNumericCellValue()).longValue() + "");
+							} else if (row.getCell(3).getCellType() == Cell.CELL_TYPE_STRING) {
+								urun.setBarKodu(row.getCell(3).getStringCellValue().trim());
+							}
 							urun.setUrunAdi(row.getCell(4).getStringCellValue());
 							urun.setMiktar(BigDecimal.valueOf(row.getCell(5).getNumericCellValue()));
 							urun.setBirimAlisFiyati(BigDecimal.valueOf(row.getCell(6).getNumericCellValue()));

@@ -17,6 +17,7 @@ import com.orma.domain.Brand;
 import com.orma.domain.Product;
 import com.orma.domain.Warehouse;
 import com.orma.domain.WarehouseRecord;
+import com.orma.exception.StockManagementException;
 
 @Transactional(propagation = Propagation.REQUIRED)
 @Component
@@ -53,8 +54,14 @@ public class DefinitionAPI implements IDefinitionAPI {
 	}
 
 	@Override
-	public void saveProduct(Product product) {
-		productDao.merge(product);
+	public void saveProduct(Product product) throws StockManagementException {
+		if (product != null && product.getBarcode() != 0L) {
+			if (getProductByBarcode(product.getBarcode()) == null) {
+				productDao.merge(product);
+			} else {
+				throw new StockManagementException("6", "Aynı barkod ile birden fazla ürün tanımlayamazsınız!!! Lütfen barkod numarasını değiştirin.");
+			}
+		}
 	}
 	
 	@Override
@@ -71,21 +78,17 @@ public class DefinitionAPI implements IDefinitionAPI {
 	public List<Product> getProductsByBrand(Brand brand) {
 		return productDao.findByCriteria(Restrictions.eq("brand.id", brand.getId()));
 	}
-
-//	@Override
-//	public void saveCompany(Company company) {
-//		companyDao.merge(company);
-//	}
-//	
-//	@Override
-//	public void deleteCompany(Company company) {
-//		companyDao.delete(companyDao.findById(company.getId()));
-//	}
-//	
-//	@Override
-//	public List<Company> getAllCompanies() {
-//		return companyDao.findAll();
-//	}
+	
+	@Override
+	public Product getProductByBarcode(Long barcode) throws StockManagementException {
+		List<Product> products =  productDao.findByCriteria(Restrictions.eq("barcode", barcode));;
+		if (products != null && products.size() == 1) {
+			return products.get(0);
+		} else if (products.size() > 1) {
+			throw new StockManagementException("5", "Aynı barkod ile birden fazla ürün tanımlanmış!!! Barkod no: " + barcode);
+		}
+		return null;
+	}
 
 	@Override
 	public void saveWarehouse(Warehouse warehouse) {

@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/main/java=ISO-8859-1
 encoding//src/main/java/com/orma/StockManagementApplication.java=UTF-8
+encoding//src/main/java/com/orma/api/impl/DefinitionAPI.java=UTF-8
 encoding//src/main/java/com/orma/api/impl/SearchAPI.java=UTF-8
 encoding//src/main/java/com/orma/domain/TransactionType.java=UTF-8
 encoding//src/main/java/com/orma/muhasebe/domain/isletme/IsletmeSayfa.java=UTF-8
@@ -21,6 +22,7 @@ encoding//src/main/java/com/orma/ui/BrandManagement.java=UTF-8
 encoding//src/main/java/com/orma/ui/CompanyManagement.java=UTF-8
 encoding//src/main/java/com/orma/ui/IsletmeManagement.java=UTF-8
 encoding//src/main/java/com/orma/ui/ProductManagement.java=UTF-8
+encoding//src/main/java/com/orma/ui/ProductPriceUpdate.java=UTF-8
 encoding//src/main/java/com/orma/ui/SayimTartiManagement.java=UTF-8
 encoding//src/main/java/com/orma/ui/StockManagementMenuLayout.java=UTF-8
 encoding//src/main/java/com/orma/ui/WarehouseManagement.java=UTF-8
