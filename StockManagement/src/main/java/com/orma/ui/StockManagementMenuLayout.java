@@ -5,8 +5,11 @@ import java.util.Map;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Tree;
 
 @SuppressWarnings("serial")
@@ -18,8 +21,27 @@ public class StockManagementMenuLayout extends GridLayout implements
 	private HorizontalSplitPanel mainPanel;
 	
 	private Map<String, GridLayout> layouts = new HashMap<String, GridLayout>();
+	
+	private GridLayout logout = new GridLayout(2,1);
+	
+	@Override
+	public void attach() {
+		String user = (String) getApplication().getUser();
+		Label userName = new Label(user);
+		Button logoutButton = new Button("Çıkış");
+		logoutButton.addListener(new Button.ClickListener() {
+			@Override
+		    public void buttonClick(ClickEvent event) {
+				getApplication().close();
+			}
+		});
+		logout.addComponent(userName, 0, 0);
+		logout.addComponent(logoutButton, 1, 0);
+	}
 
-	public StockManagementMenuLayout(HorizontalSplitPanel mainPanel) {
+	public StockManagementMenuLayout(final HorizontalSplitPanel mainPanel) {
+		logout.setSpacing(true);
+		
 		this.mainPanel = mainPanel;
 		
 		menuTree = new Tree("Kantin Yönetim Programı");
@@ -63,6 +85,7 @@ public class StockManagementMenuLayout extends GridLayout implements
 		menuTree.setChildrenAllowed("Depo Stok Sayım", false);
 		
 		setSpacing(true);
+		addComponent(logout);
 		addComponent(menuTree);
 	}
 

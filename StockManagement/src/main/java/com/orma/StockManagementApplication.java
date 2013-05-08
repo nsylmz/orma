@@ -10,6 +10,9 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.LoginForm;
+import com.vaadin.ui.LoginForm.LoginEvent;
+import com.vaadin.ui.LoginForm.LoginListener;
 import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
@@ -22,12 +25,12 @@ public class StockManagementApplication extends Application
     private GridLayout applicationLayout;
     
     @Override
-    public void init()
-    {
+    public void init() {
 //    	setTheme(ChameleonTheme.THEME_NAME);
 //    	setTheme(Runo.THEME_NAME);
 //    	setTheme(Reindeer.THEME_NAME);
-        mainWindow = new Window("Kantin Başkanlığı Programı Ana Ekran");
+    	
+    	mainWindow = new Window("Kantin Başkanlığı Programı Ana Ekran");
         setMainWindow(mainWindow);
         mainWindow.setSizeFull();
         
@@ -48,7 +51,29 @@ public class StockManagementApplication extends Application
         horizontalSplitPanel.setHeight("725px");
         horizontalSplitPanel.setWidth("100%");
         horizontalSplitPanel.setLocked(true);
-        horizontalSplitPanel.addComponent(new StockManagementMenuLayout(horizontalSplitPanel));
+        
+        final GridLayout menu = new StockManagementMenuLayout(horizontalSplitPanel);
+        
+        LoginForm login = new LoginForm();
+    	login.setPasswordCaption("Şifre");
+    	login.setUsernameCaption("Kullanıcı Adı");
+    	login.setLoginButtonCaption("Giriş");
+    	login.addListener(new LoginListener() {
+
+            @Override
+            public void onLogin(LoginEvent event) {
+                String username = event.getLoginParameter("username");
+                String password = event.getLoginParameter("password");
+                
+                if (username.equals("ormadepo") && password.equals("1234")) {
+					setUser("ormadepo");
+					horizontalSplitPanel.setFirstComponent(menu);
+				}
+            }
+        });
+        
+//        horizontalSplitPanel.addComponent(new StockManagementMenuLayout(horizontalSplitPanel));
+        horizontalSplitPanel.addComponent(login);
         horizontalSplitPanel.addComponent(applicationLayout);
         
         mainWindow.addComponent(horizontalSplitPanel);

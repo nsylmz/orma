@@ -3,6 +3,7 @@ package com.orma.api.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -57,7 +58,9 @@ public class SearchAPI implements ISearchAPI {
 	private EntityManager entityManager;
 	
 	@SuppressWarnings("unchecked")
-	public List<WarehouseStockReport> getReportsByWarehouseOrProductOrBrand(Warehouse warehouse, Product product, Brand brand, ReportType reportType) {
+	public List<WarehouseStockReport> getReportsByWarehouseOrProductOrBrand(Warehouse warehouse, Product product, 
+																			Brand brand, ReportType reportType,
+																			Date end) {
 		
 		List<WarehouseStockReport> reportList = new ArrayList<WarehouseStockReport>();
 		Session session = (Session) entityManager.getDelegate();
@@ -170,6 +173,13 @@ public class SearchAPI implements ISearchAPI {
 			query.addScalar("total_amount");
 			query.addScalar("total_buy");
 			query.addScalar("total_sell");
+			if (end != null) {
+				query.setLong(0, 0);
+				query.setDate(1, end);
+			} else if (end == null) {
+				query.setLong(0, 1);
+				query.setDate(1, null);
+			} 
 			results = query.list();
 			for (int i = 0; i < results.size(); i++) {
 				row = results.get(i);

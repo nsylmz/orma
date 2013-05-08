@@ -2,6 +2,7 @@ package com.orma.muhasebe.sayim;
 
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ public class DepoSayimWriter {
 	@Autowired
 	ISearchAPI searchAPI;
 	
-	public void write(String filePath) throws StockManagementException {
+	public void write(String filePath, Date end) throws StockManagementException {
 		
 		HSSFRow row = null;
 		HSSFCell cell = null;
@@ -44,7 +45,7 @@ public class DepoSayimWriter {
 			
 			BigDecimal totalBuy = BigDecimal.ZERO;
 			BigDecimal totalSell = BigDecimal.ZERO;
-			List<WarehouseStockReport> reports = searchAPI.getReportsByWarehouseOrProductOrBrand(null, null, null, ReportType.sayim);
+			List<WarehouseStockReport> reports = searchAPI.getReportsByWarehouseOrProductOrBrand(null, null, null, ReportType.sayim, end);
 			for (int i = 0; i < reports.size(); i++) {
 				row = sheet.createRow(rowNum);
 				

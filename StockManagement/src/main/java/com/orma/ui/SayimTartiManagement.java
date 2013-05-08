@@ -44,7 +44,7 @@ public class SayimTartiManagement extends GridLayout implements Button.ClickList
 		vegaKlasor.setWidth(labelSize);
 		vegaFileName.setRequired(true);
 		vegaFileName.setWidth(textFieldSize);
-		vegaFileName.setInputPrompt("Örn: MARKET02.xls");
+		vegaFileName.setInputPrompt("Örn: MARKET02");
 		vegaSheetName.setWidth(textFieldSize);
 		vegaFileName.setInputPrompt("Örn: BUFE02");
 		vegaSheetName.setRequired(false);
@@ -56,7 +56,7 @@ public class SayimTartiManagement extends GridLayout implements Button.ClickList
 		
 		sayimKlasor.setWidth(labelSize);
 		sayimFileName.setWidth(textFieldSize);
-		sayimFileName.setInputPrompt("Örn: MARKET02.xlsx");
+		sayimFileName.setInputPrompt("Örn: MARKET02");
 		sayimFileName.setRequired(true);
 		addComponent(sayimKlasor, 0, 2);
 		setComponentAlignment(sayimKlasor, Alignment.BOTTOM_RIGHT);

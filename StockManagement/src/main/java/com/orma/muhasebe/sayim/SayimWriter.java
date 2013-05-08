@@ -31,8 +31,6 @@ public class SayimWriter {
 		SayimSatir sayimSatir = null;
 		
 		try {
-			templatePageNumber = templatePageNumber - 1;
-			
 			InputStream inp = new FileInputStream(baseFilePath);
 			Workbook wb = WorkbookFactory.create(inp);
 			Sheet sheet = wb.getSheet(sheetName);
@@ -98,7 +96,7 @@ public class SayimWriter {
 				row.getCell(7).setCellValue(sayimSayfa.getKumulatifKarToplam().doubleValue());
 				rowNum++;
 				
-				if (i != templatePageNumber-sayimDokuman.getSayfaList().size()-1) {
+				if (i != templatePageNumber-sayimDokuman.getSayfaList().size()) {
 					row = sheet.getRow(rowNum);
 					row.getCell(4).setCellValue(sayimSayfa.getKumulatifAlisToplam().doubleValue());
 					row.getCell(6).setCellValue(sayimSayfa.getKumulatifSatisToplam().doubleValue());

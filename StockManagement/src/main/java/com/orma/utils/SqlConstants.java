@@ -26,6 +26,7 @@ public class SqlConstants {
 										 "	    brand b "												+
 										 "	where wr.product_id = p.id "								+
 										 "	  and wr.warehouse_id = w.id "								+
+										 "	  and (1 = ? or wr.DEPLOYMENT_DATE <= ?) "					+
 										 "	  and p.brand_id = b.id "									+
 										 "	group by bName, pName, pBarcode, pBuyPrice, pSellPrice";
 	

@@ -274,7 +274,8 @@ public class WarehouseStockReportsManagement extends GridLayout {
 				uiReportList = searchAPI.getReportsByWarehouseOrProductOrBrand((Warehouse) warehouseSelect.getValue(), 
 																(Product) productSelect.getValue(), 
 																(Brand) brandSelect.getValue(), 
-																(ReportType) reportSelect.getValue());
+																(ReportType) reportSelect.getValue(),
+																null);
 				reportTable.setLocale(new Locale("tr"));
 				reportTable.setFooterVisible(true);
 				ReportType type = null;
