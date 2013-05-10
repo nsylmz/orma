@@ -65,8 +65,8 @@ public class StockManagementApplication extends Application
                 String username = event.getLoginParameter("username");
                 String password = event.getLoginParameter("password");
                 
-                if (username.equals("ormadepo") && password.equals("1234")) {
-					setUser("ormadepo");
+                if (username.equals("orma") && password.equals("depo1234")) {
+					setUser("orma");
 					horizontalSplitPanel.setFirstComponent(menu);
 				}
             }
